@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region PRIVATE_FIELDS
-    Vector3 moveInput;
+    Vector3 moveInput = Vector3.zero;
     #endregion
 
     #region COMPONENTS
@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        moveInput = GetMovementInput();
+        UpdateMoveInput();
     }
 
     void FixedUpdate()
@@ -33,12 +33,16 @@ public class PlayerController : MonoBehaviour
     }
 
     #region Movement
-    Vector3 GetMovementInput()
+    // Кастомный Input.GetAxis.
+    void UpdateMoveInput()
     {
-        float h = Mathf.Clamp(Input.GetAxis("Horizontal") * accFactor, -1f, 1f);
-        float v = Mathf.Clamp(Input.GetAxis("Vertical") * accFactor, -1f, 1f);
+        float rawH = Input.GetAxisRaw("Horizontal");
+        float rawV = Input.GetAxisRaw("Vertical");
 
-        return new Vector3(h, 0f, v).normalized;
+        moveInput.x = Mathf.Lerp(moveInput.x, rawH, Time.deltaTime * accFactor);
+        moveInput.z = Mathf.Lerp(moveInput.z, rawV, Time.deltaTime * accFactor);
+
+        moveInput = Vector3.ClampMagnitude(moveInput, 1f);
     }
     #endregion
 
