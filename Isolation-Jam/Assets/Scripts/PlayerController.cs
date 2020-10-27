@@ -7,16 +7,25 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     public float runSpeed = 500f;
     public float accelerationSpeed = 15f;
+
     [Header("Dash")]
     public bool isDashing = false;
+    [Space]
+    public KeyCode DashInput;
     public float dashSpeed = 1000f;
     public float dashDist = 5f;
+    public float dashDelay = 1f;
     [Space]
     public int groundLayer = 9;
+
+    [Header("Melee")]
+    public KeyCode MeleeInput;
+    public MeleeWeapon meleeWeapon;
     #endregion
 
     #region PRIVATE_FIELDS
     bool isCollision = false;
+    bool isDashDelay = false;
     Vector3 movementInput = Vector3.zero;
     #endregion
 
@@ -46,11 +55,14 @@ public class PlayerController : MonoBehaviour
         if (!isDashing)
             UpdateMovementInput();
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(DashInput))
         {
-            if (movementInput.magnitude > 0 && !isCollision)
+            if (movementInput.magnitude > 0 && !isCollision && !isDashDelay)
                 StartCoroutine(Dash());
         }
+
+        if (Input.GetKeyDown(MeleeInput))
+            meleeWeapon.Attack();
 
         PlayerRotation();
     }
@@ -85,6 +97,18 @@ public class PlayerController : MonoBehaviour
 
         MovementSpeed = runSpeed;
         isDashing = false;
+        StartDashDelay();
+    }
+
+    void StartDashDelay()
+    {
+        isDashDelay = true;
+        Invoke("StopDashDelay", dashDelay);
+    }
+
+    void StopDashDelay()
+    {
+        isDashDelay = false;
     }
 
     #endregion
