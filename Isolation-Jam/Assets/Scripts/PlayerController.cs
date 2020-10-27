@@ -11,11 +11,13 @@ public class PlayerController : MonoBehaviour
     public bool isDashing = false;
     public float dashSpeed = 1000f;
     public float dashDist = 5f;
+    [Space]
+    public int groundLayer = 9;
     #endregion
 
     #region PRIVATE_FIELDS
+    bool isCollision = false;
     Vector3 movementInput = Vector3.zero;
-    int nonPlayerLayerMask;
     #endregion
 
     #region PROPERTIES
@@ -37,9 +39,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         MovementSpeed = runSpeed;
-
-        nonPlayerLayerMask = 1 << gameObject.layer;
-        nonPlayerLayerMask = ~nonPlayerLayerMask;
     }
 
     void Update()
@@ -49,7 +48,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (movementInput.magnitude > 0)
+            if (movementInput.magnitude > 0 && !isCollision)
                 StartCoroutine(Dash());
         }
 
@@ -81,21 +80,13 @@ public class PlayerController : MonoBehaviour
         MovementSpeed = dashSpeed;
         isDashing = true;
 
-        while (Vector3.Distance(initPos, transform.position) < dashDist && !IsObstacleOnDashDir(movementInput))
+        while (Vector3.Distance(initPos, transform.position) < dashDist && !isCollision)
             yield return null;
 
         MovementSpeed = runSpeed;
         isDashing = false;
     }
-    
 
-    // Можно сделать через OnCollisionEnter
-    bool IsObstacleOnDashDir(Vector3 direction)
-    {
-        Ray ray = new Ray(transform.position, direction);
-        Debug.DrawRay(ray.origin, ray.direction, Color.blue);
-        return Physics.Raycast(ray, 1f, nonPlayerLayerMask);
-    }
     #endregion
 
     #region Rotation
@@ -110,9 +101,27 @@ public class PlayerController : MonoBehaviour
             float rotY = Mathf.Atan2(dir.z, -dir.x) * Mathf.Rad2Deg - 90f;
             Quaternion rotation = Quaternion.Euler(Vector3.up * rotY);
             transform.rotation = rotation;
-        }        
+        }
     }
     #endregion
 
+    #endregion
+
+    #region Collision Detection
+    private void OnCollisionEnter(Collision coll)
+    {
+        // Если игрок коллизится не с полом => отключаем dash.
+        if (coll != null)
+            if (coll.gameObject.layer != groundLayer)
+                isCollision = true;
+    }
+
+    private void OnCollisionExit(Collision coll)
+    {
+        // Игрок перестал коллизится не с полом.
+        if (coll != null)
+            if (coll.gameObject.layer != groundLayer)
+                isCollision = false;
+    }
     #endregion
 }
