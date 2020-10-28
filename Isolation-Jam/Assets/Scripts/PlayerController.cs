@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     public MeleeWeapon meleeWeapon;
 
     [Header("Battery Cell")]
-    public GameObject batteryCell;
+
     [Range(0f, 1f)] public float speedDecrease = 0.25f;
     #endregion
 
@@ -34,7 +34,9 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region PROPERTIES
+    public BatteryCell HoldingBattery { get; set; }
     float MovementSpeed { get; set; }
+    float MovementModifier { get => HoldingBattery != null ? 1f - speedDecrease : 1f; }
     #endregion
 
     #region COMPONENTS
@@ -42,7 +44,6 @@ public class PlayerController : MonoBehaviour
     Camera cam;
     #endregion
 
-    #region METHODS
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -73,7 +74,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.velocity = movementInput * MovementSpeed * Time.fixedDeltaTime;
+        rb.velocity = movementInput * MovementSpeed * MovementModifier * Time.fixedDeltaTime;
     }
 
     #region Movement
@@ -96,7 +97,7 @@ public class PlayerController : MonoBehaviour
         MovementSpeed = dashSpeed;
         isDashing = true;
 
-        while (Vector3.Distance(initPos, transform.position) < dashDist && !isCollision)
+        while (Vector3.Distance(initPos, transform.position) < dashDist * MovementModifier && !isCollision)
             yield return null;
 
         MovementSpeed = runSpeed;
@@ -133,8 +134,6 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #endregion
-
     #region Collision Detection
     private void OnCollisionEnter(Collision coll)
     {
@@ -142,6 +141,13 @@ public class PlayerController : MonoBehaviour
         if (coll != null)
             if (coll.gameObject.layer != groundLayer)
                 isCollision = true;
+
+        if (coll.collider.CompareTag("WorldWall"))
+        {
+            //Destroy
+            rb.AddForce(coll.contacts[0].point - transform.position * 5f, ForceMode.Impulse);
+        }
+
     }
 
     private void OnCollisionExit(Collision coll)

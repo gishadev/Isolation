@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { private set; get; }
     #endregion
 
+    public PlayerController player;
     public Transform playerSpawnpoint;
 
     void Awake()

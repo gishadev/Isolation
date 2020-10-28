@@ -80,11 +80,11 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MaxX: 32
-    - _MaxZ: 32
+    - _MaxX: 30.5
+    - _MaxZ: 30.5
     - _Metallic: 0
-    - _MinX: -32
-    - _MinZ: -32
+    - _MinX: -31.5
+    - _MinZ: -31.5
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Offset: 1
@@ -102,5 +102,5 @@ Material:
     - _Min: {r: -32, g: -32, b: 0, a: 0}
     - _Offset: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _Tiling: {r: 1, g: 1, b: 0, a: 0}
-    - _Tint: {r: 0, g: 0, b: 0, a: 0}
+    - _Tint: {r: 0.16981131, g: 0.16981131, b: 0.16981131, a: 0}
   m_BuildTextureStacks: []

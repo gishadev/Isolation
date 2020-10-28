@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 8146722846693858077}
   m_Layer: 8
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -219,6 +219,7 @@ MonoBehaviour:
   groundLayer: 9
   MeleeInput: 118
   meleeWeapon: {fileID: 656598863511136073}
+  speedDecrease: 0.25
 --- !u!1 &8146722847409309566
 GameObject:
   m_ObjectHideFlags: 0

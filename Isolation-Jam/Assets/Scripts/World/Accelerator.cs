@@ -33,4 +33,18 @@ public class Accelerator : MonoBehaviour
     {
         Power += value;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            PlayerController p = GameManager.Instance.player;
+            if (p.HoldingBattery)
+            {
+                Charge(p.HoldingBattery.chargePercent);
+                Destroy(p.HoldingBattery.gameObject);
+            }
+        }
+            
+    }
 }
