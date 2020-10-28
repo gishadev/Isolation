@@ -21,6 +21,10 @@ public class PlayerController : MonoBehaviour
     [Header("Melee")]
     public KeyCode MeleeInput;
     public MeleeWeapon meleeWeapon;
+
+    [Header("Battery Cell")]
+    public GameObject batteryCell;
+    [Range(0f, 1f)] public float speedDecrease = 0.25f;
     #endregion
 
     #region PRIVATE_FIELDS
