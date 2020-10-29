@@ -108,4 +108,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ca304ac5a230354cb618ae3e6168f13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fullDischargeTime: 15
+  fullDischargeTime: 20
