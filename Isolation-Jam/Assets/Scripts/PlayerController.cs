@@ -18,10 +18,6 @@ public class PlayerController : MonoBehaviour
     [Space]
     public int groundLayer = 9;
 
-    [Header("Melee")]
-    public KeyCode MeleeInput;
-    public MeleeWeapon meleeWeapon;
-
     [Header("Battery Cell")]
 
     [Range(0f, 1f)] public float speedDecrease = 0.25f;
@@ -65,9 +61,6 @@ public class PlayerController : MonoBehaviour
             if (movementInput.magnitude > 0 && !isCollision && !isDashDelay)
                 StartCoroutine(Dash());
         }
-
-        if (Input.GetKeyDown(MeleeInput))
-            meleeWeapon.Attack();
 
         PlayerRotation();
     }
