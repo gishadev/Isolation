@@ -6,6 +6,9 @@ public class PlayerController : MonoBehaviour
     #region PUBLIC_FIELDS
     [Header("General")]
     public int maxHealth = 100;
+    public Gun defaultGun;
+
+    [HideInInspector] public Gun currentGun;
 
     [Header("Movement")]
     public float runSpeed = 500f;
@@ -65,6 +68,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
+        currentGun = defaultGun;
     }
 
     void FixedUpdate()
@@ -83,6 +87,18 @@ public class PlayerController : MonoBehaviour
         {
             if (movementInput.normalized.magnitude > 0 && !isCollision && !isDashDelay)
                 StartCoroutine(Dash());
+        }
+
+        if (!currentGun.isAutomatic)
+        {
+            if (Input.GetMouseButtonDown(0))
+                currentGun.Shoot();
+        }
+
+        else
+        {
+            if (Input.GetMouseButton(0))
+                currentGun.Shoot();
         }
 
         PlayerRotation();
@@ -167,6 +183,11 @@ public class PlayerController : MonoBehaviour
 
         if (Health <= 0)
             Die();
+    }
+
+    public void AddKnockback(Vector3 force)
+    {
+        rb.AddForce(force, ForceMode.Impulse);
     }
 
     public void Die()

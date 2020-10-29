@@ -3,24 +3,28 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    #region PRIVATE_FIELDS
-    Transform playerTrans;
-    #endregion
+    [Header("General")]
+    public int health = 10;
 
-    #region COMPONENTS
-    NavMeshAgent agent;
-    #endregion
+    public Transform PlayerTrans { private set; get; }
+    public NavMeshAgent Agent { private set; get; }
 
-    #region METHODS
     void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();
-        playerTrans = FindObjectOfType<PlayerController>().transform;
+        Agent = GetComponent<NavMeshAgent>();
+        PlayerTrans = FindObjectOfType<PlayerController>().transform;
     }
 
-    void Update()
+    public void TakeDamage(int dmg)
     {
-        agent.SetDestination(playerTrans.position);
+        health -= dmg;
+
+        if (health <= 0)
+            Die();
     }
-    #endregion
+
+    public void Die()
+    {
+        Destroy(gameObject);
+    }
 }
