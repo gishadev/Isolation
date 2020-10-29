@@ -8,9 +8,12 @@ public class BatteryCell : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PlayerController p = GameManager.Instance.player;
-            p.HoldingBattery = this;
-            transform.SetParent(p.transform);
+            PlayerController p = PlayerManager.Instance.player;
+            if (p.HoldingBattery == null)
+            {
+                p.HoldingBattery = this;
+                transform.SetParent(p.transform);
+            }
         }
     }
 }

@@ -38,7 +38,7 @@ public class Accelerator : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PlayerController p = GameManager.Instance.player;
+            PlayerController p = PlayerManager.Instance.player;
             if (p.HoldingBattery)
             {
                 Charge(p.HoldingBattery.chargePercent);

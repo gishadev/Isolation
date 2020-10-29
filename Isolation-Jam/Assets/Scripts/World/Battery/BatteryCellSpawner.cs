@@ -7,7 +7,7 @@ public class BatteryCellSpawner : MonoBehaviour
     public float spawnDelay = 15f;
 
     BatteryCell spawnedBattery;
-    bool IsHold { get => spawnedBattery != GameManager.Instance.player.HoldingBattery; }
+    bool IsHold { get => spawnedBattery != PlayerManager.Instance.player.HoldingBattery; }
 
     void Start()
     {

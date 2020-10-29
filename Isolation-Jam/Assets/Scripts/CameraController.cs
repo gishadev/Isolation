@@ -2,27 +2,23 @@
 
 public class CameraController : MonoBehaviour
 {
-    #region PUBLIC_FIELDS
     [Header("Movement")]
     public Transform target;
     public float maxXOffset, maxZOffset;
     public float smoothness = 1f;
-    #endregion
 
-    #region PRIVATE_FIELDS
     Vector3 offset;
-    #endregion
 
-    #region METHODS
-
-    void Update()
+    void FixedUpdate()
     {
         // Камера следует за игроком и оффсетим в сторону мыши.
-        offset.x = Mathf.Lerp(offset.x, GetMouseDistFromCenter().x * maxXOffset, Time.deltaTime * smoothness);
+        offset.x = GetMouseDistFromCenter().x * maxXOffset;
         offset.y = 0f;
-        offset.z = Mathf.Lerp(offset.z, GetMouseDistFromCenter().y * maxZOffset, Time.deltaTime * smoothness);
+        offset.z = GetMouseDistFromCenter().y * maxZOffset;
 
-        transform.position = target.position + offset;
+        Vector3 newPos = target.position + offset;
+
+        transform.position = Vector3.Lerp(transform.position, newPos, Time.deltaTime * smoothness);
     }
 
 
@@ -32,6 +28,4 @@ public class CameraController : MonoBehaviour
         float y = Mathf.Clamp(((Input.mousePosition.y - (Screen.height / 2f)) / Screen.height) * 2f, -1f, 1f);
         return new Vector2(x, y);
     }
-
-    #endregion
 }

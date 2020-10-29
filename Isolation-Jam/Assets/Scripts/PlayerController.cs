@@ -9,8 +9,6 @@ public class PlayerController : MonoBehaviour
     public float accelerationSpeed = 15f;
 
     [Header("Dash")]
-    public bool isDashing = false;
-    [Space]
     public KeyCode DashInput;
     public float dashSpeed = 1000f;
     public float dashDist = 5f;
@@ -30,8 +28,9 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region PROPERTIES
+    public bool IsDashing { set; get; } = false;
     public BatteryCell HoldingBattery { get; set; }
-    float MovementSpeed { get; set; }
+    float MovementSpeed { get => IsDashing ? dashSpeed : runSpeed; }
     float MovementModifier { get => HoldingBattery != null ? 1f - speedDecrease : 1f; }
     #endregion
 
@@ -46,14 +45,9 @@ public class PlayerController : MonoBehaviour
         cam = Camera.main;
     }
 
-    void Start()
-    {
-        MovementSpeed = runSpeed;
-    }
-
     void Update()
     {
-        if (!isDashing)
+        if (!IsDashing)
             UpdateMovementInput();
 
         if (Input.GetKeyDown(DashInput))
@@ -87,14 +81,12 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 initPos = transform.position;
         movementInput = movementInput.normalized;
-        MovementSpeed = dashSpeed;
-        isDashing = true;
+        IsDashing = true;
 
         while (Vector3.Distance(initPos, transform.position) < dashDist * MovementModifier && !isCollision)
             yield return null;
 
-        MovementSpeed = runSpeed;
-        isDashing = false;
+        IsDashing = false;
         StartDashDelay();
     }
 
@@ -136,11 +128,7 @@ public class PlayerController : MonoBehaviour
                 isCollision = true;
 
         if (coll.collider.CompareTag("WorldWall"))
-        {
-            //Destroy
-            rb.AddForce(coll.contacts[0].point - transform.position * 5f, ForceMode.Impulse);
-        }
-
+            Die();
     }
 
     private void OnCollisionExit(Collision coll)
@@ -151,4 +139,14 @@ public class PlayerController : MonoBehaviour
                 isCollision = false;
     }
     #endregion
+
+    public void Die()
+    {
+        gameObject.SetActive(false);
+
+        IsDashing = false;
+        StopDashDelay();
+
+        PlayerManager.Instance.TriggerRespawning();
+    }
 }

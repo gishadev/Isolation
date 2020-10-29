@@ -35,9 +35,9 @@ public class WorldEdge
     Vector3 collapseDir
     {
         get => new Vector3(
-            GameManager.Instance.playerSpawnpoint.position.x - wall.transform.position.x,
+            PlayerManager.Instance.playerSpawnpoint.position.x - wall.transform.position.x,
             0f,
-            GameManager.Instance.playerSpawnpoint.position.z - wall.transform.position.z).normalized;
+            PlayerManager.Instance.playerSpawnpoint.position.z - wall.transform.position.z).normalized;
     }
 
     public void Collapse(float speed)
