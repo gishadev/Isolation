@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8364543255236074818}
   - component: {fileID: 5969863571394292569}
   - component: {fileID: 8364543255236074831}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Core
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 3.46, z: 1}
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &5969863571394292569
 Rigidbody:
@@ -125,3 +125,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d09eb87948a5ec49a5a100e3b8d4ab7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactableRadius: 3

@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region PROPERTIES
+    PlayerManager manager { get => PlayerManager.Instance; }
+
     public int Health
     {
         get => currentHealth;
@@ -65,26 +67,42 @@ public class PlayerController : MonoBehaviour
         currentHealth = maxHealth;
     }
 
+    void FixedUpdate()
+    {
+        rb.velocity = movementInput * MovementSpeed * MovementModifier * Time.fixedDeltaTime;
+    }
+
     void Update()
     {
         if (!IsDashing)
+        {
             UpdateMovementInput();
+        }
 
         if (Input.GetKeyDown(DashInput))
         {
-            if (movementInput.magnitude > 0 && !isCollision && !isDashDelay)
+            if (movementInput.normalized.magnitude > 0 && !isCollision && !isDashDelay)
                 StartCoroutine(Dash());
         }
-
-        if (Input.GetKeyDown(KeyCode.K))
-            AddHealth(-20);
 
         PlayerRotation();
     }
 
-    void FixedUpdate()
+    void LateUpdate()
     {
-        rb.velocity = movementInput * MovementSpeed * MovementModifier * Time.fixedDeltaTime;
+        // Взаимодействуем.
+        if (manager.SelectedInteractTarget != null)
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+                manager.SelectedInteractTarget.Interact();
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if (HoldingBattery != null)
+                DropBattery(transform.position);
+        }
     }
 
     #region Movement
@@ -157,13 +175,29 @@ public class PlayerController : MonoBehaviour
 
         gameObject.SetActive(false);
 
-        Destroy(HoldingBattery.gameObject);
+        if (HoldingBattery != null)
+            DropBattery(transform.position);
 
         IsDashing = false;
         isCollision = false;
         StopDashDelay();
 
         PlayerManager.Instance.TriggerRespawning();
+    }
+    #endregion
+
+    #region Carry Battery
+    public void DropBattery(Vector3 newPosition)
+    {
+        HoldingBattery.transform.SetParent(null);
+        HoldingBattery.transform.position = newPosition;
+        HoldingBattery = null;
+    }
+
+    public void TakeBattery(BatteryCell b)
+    {
+        HoldingBattery = b;
+        HoldingBattery.transform.SetParent(transform);
     }
     #endregion
 
@@ -187,4 +221,5 @@ public class PlayerController : MonoBehaviour
                 isCollision = false;
     }
     #endregion
+
 }

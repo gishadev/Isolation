@@ -1,20 +1,18 @@
 ﻿using UnityEngine;
 
-public class BatteryCell : MonoBehaviour
+public class BatteryCell : InteractionTarget
 {
+    [Header("Battery")]
     [Range(0f, 1f)] public float speedDecrease = 0.25f;
     public float chargePercent = 0.5f;
 
-    private void OnTriggerEnter(Collider other)
+    public override void Interact()
     {
-        if (other.CompareTag("Player"))
-        {
-            PlayerController p = PlayerManager.Instance.player;
-            if (p.HoldingBattery == null)
-            {
-                p.HoldingBattery = this;
-                transform.SetParent(p.transform);
-            }
-        }
+        PlayerManager.Instance.player.TakeBattery(this);
+    }
+
+    public override bool IsReadyForInteraction()
+    {
+        return PlayerManager.Instance.player.HoldingBattery == null;
     }
 }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7168499960326000839}
   - component: {fileID: 8177335283661936515}
   - component: {fileID: 5309778864028719719}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Battery Cell T1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,4 +108,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c23273a906112af408d2d39a824e980a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactableRadius: 2
+  speedDecrease: 0.15
   chargePercent: 0.33

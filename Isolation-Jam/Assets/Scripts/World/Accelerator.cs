@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 
-public class Accelerator : MonoBehaviour
+public class Accelerator : InteractionTarget
 {
+    [Header("Accelerator")]
     public float fullDischargeTime = 10f;
     public float Power { private set { power = Mathf.Clamp01(value); } get => power; }
     public bool IsCharged { get => Power > 0f; }
@@ -19,11 +20,6 @@ public class Accelerator : MonoBehaviour
         Power -= Time.fixedDeltaTime / fullDischargeTime;
     }
 
-    void Update()
-    {
-
-    }
-
     public void Charge()
     {
         Power = 1.0f;
@@ -34,17 +30,18 @@ public class Accelerator : MonoBehaviour
         Power += value;
     }
 
-    private void OnTriggerEnter(Collider other)
+    public override void Interact()
     {
-        if (other.CompareTag("Player"))
+        PlayerController p = PlayerManager.Instance.player;
+        if (p.HoldingBattery)
         {
-            PlayerController p = PlayerManager.Instance.player;
-            if (p.HoldingBattery)
-            {
-                Charge(p.HoldingBattery.chargePercent);
-                Destroy(p.HoldingBattery.gameObject);
-            }
+            Charge(p.HoldingBattery.chargePercent);
+            Destroy(p.HoldingBattery.gameObject);
         }
-            
+    }
+
+    public override bool IsReadyForInteraction()
+    {
+        return PlayerManager.Instance.player.HoldingBattery != null;
     }
 }
