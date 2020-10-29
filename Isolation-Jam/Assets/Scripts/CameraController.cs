@@ -3,11 +3,16 @@
 public class CameraController : MonoBehaviour
 {
     [Header("Movement")]
-    public Transform target;
     public float maxXOffset, maxZOffset;
     public float smoothness = 1f;
 
+    Transform target;
     Vector3 offset;
+
+    void Start()
+    {
+        target = PlayerManager.Instance.player.transform;
+    }
 
     void FixedUpdate()
     {

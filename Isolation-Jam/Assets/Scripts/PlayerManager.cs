@@ -26,6 +26,7 @@ public class PlayerManager : MonoBehaviour
     {
         player.transform.position = playerSpawnpoint.position;
         yield return new WaitForSeconds(respawnTime);
+        player.Health = player.maxHealth;
         player.gameObject.SetActive(true);
     }
     #endregion

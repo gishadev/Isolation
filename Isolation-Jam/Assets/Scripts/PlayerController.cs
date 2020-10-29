@@ -4,6 +4,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     #region PUBLIC_FIELDS
+    [Header("General")]
+    public int maxHealth = 100;
+
     [Header("Movement")]
     public float runSpeed = 500f;
     public float accelerationSpeed = 15f;
@@ -15,23 +18,35 @@ public class PlayerController : MonoBehaviour
     public float dashDelay = 1f;
     [Space]
     public int groundLayer = 9;
-
-    [Header("Battery Cell")]
-
-    [Range(0f, 1f)] public float speedDecrease = 0.25f;
     #endregion
 
     #region PRIVATE_FIELDS
+    int currentHealth;
+
     bool isCollision = false;
     bool isDashDelay = false;
     Vector3 movementInput = Vector3.zero;
     #endregion
 
     #region PROPERTIES
+    public int Health
+    {
+        get => currentHealth;
+        set
+        {
+            currentHealth = Mathf.Clamp(value, 0, maxHealth);
+            UIManager.Instance.health.UpdateHealthBar(currentHealth, maxHealth);
+        }
+    }
+
     public bool IsDashing { set; get; } = false;
+
+    // Аккумулятор, который держит игрок.
     public BatteryCell HoldingBattery { get; set; }
+    // Значение скорости при различных типах передвижения.
     float MovementSpeed { get => IsDashing ? dashSpeed : runSpeed; }
-    float MovementModifier { get => HoldingBattery != null ? 1f - speedDecrease : 1f; }
+    // "Замедлитель" игрока, когда он несёт аккумулятор.
+    float MovementModifier { get => HoldingBattery != null ? 1f - HoldingBattery.speedDecrease : 1f; }
     #endregion
 
     #region COMPONENTS
@@ -45,6 +60,11 @@ public class PlayerController : MonoBehaviour
         cam = Camera.main;
     }
 
+    void Start()
+    {
+        currentHealth = maxHealth;
+    }
+
     void Update()
     {
         if (!IsDashing)
@@ -55,6 +75,9 @@ public class PlayerController : MonoBehaviour
             if (movementInput.magnitude > 0 && !isCollision && !isDashDelay)
                 StartCoroutine(Dash());
         }
+
+        if (Input.GetKeyDown(KeyCode.K))
+            AddHealth(-20);
 
         PlayerRotation();
     }
@@ -119,6 +142,31 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
+    #region Health
+    public void AddHealth(int value)
+    {
+        Health += value;
+
+        if (Health <= 0)
+            Die();
+    }
+
+    public void Die()
+    {
+        Health = 0;
+
+        gameObject.SetActive(false);
+
+        Destroy(HoldingBattery.gameObject);
+
+        IsDashing = false;
+        isCollision = false;
+        StopDashDelay();
+
+        PlayerManager.Instance.TriggerRespawning();
+    }
+    #endregion
+
     #region Collision Detection
     private void OnCollisionEnter(Collision coll)
     {
@@ -139,14 +187,4 @@ public class PlayerController : MonoBehaviour
                 isCollision = false;
     }
     #endregion
-
-    public void Die()
-    {
-        gameObject.SetActive(false);
-
-        IsDashing = false;
-        StopDashDelay();
-
-        PlayerManager.Instance.TriggerRespawning();
-    }
 }

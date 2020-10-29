@@ -2,6 +2,7 @@
 
 public class BatteryCell : MonoBehaviour
 {
+    [Range(0f, 1f)] public float speedDecrease = 0.25f;
     public float chargePercent = 0.5f;
 
     private void OnTriggerEnter(Collider other)
