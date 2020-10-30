@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb835d90d189b934f8f386b1cdded85a, type: 3}
+  m_Name: Sniper
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 2364224089943508206, guid: d6d9da3e7b4dd9846968eace3ef768b8, type: 3}
+  offsetPosition: {x: 0.44, y: 0, z: 0.14}
+  offsetRotation: {x: 0, y: 90, z: 17.669}

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Accelerator : InteractionTarget
+public class Accelerator : MonoBehaviour, IInteractable
 {
     [Header("Accelerator")]
     public float fullDischargeTime = 10f;
@@ -30,17 +30,17 @@ public class Accelerator : InteractionTarget
         Power += value;
     }
 
-    public override void Interact()
+    public void Interact()
     {
         PlayerController p = PlayerManager.Instance.player;
-        if (p.HoldingBattery)
+        if (p.HoldingBattery != null)
         {
             Charge(p.HoldingBattery.chargePercent);
             Destroy(p.HoldingBattery.gameObject);
         }
     }
 
-    public override bool IsReadyForInteraction()
+    public bool IsReadyForInteraction()
     {
         return PlayerManager.Instance.player.HoldingBattery != null;
     }

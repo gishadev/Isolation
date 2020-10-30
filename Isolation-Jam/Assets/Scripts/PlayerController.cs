@@ -6,7 +6,6 @@ public class PlayerController : MonoBehaviour
     #region PUBLIC_FIELDS
     [Header("General")]
     public int maxHealth = 100;
-    public Gun defaultGun;
 
     [HideInInspector] public Gun currentGun;
 
@@ -68,7 +67,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
-        currentGun = defaultGun;
     }
 
     void FixedUpdate()
@@ -78,30 +76,35 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // Передвижение.
         if (!IsDashing)
-        {
             UpdateMovementInput();
-        }
 
+        // Поворот игрока.
+        PlayerRotation();
+
+        // Рывок.
         if (Input.GetKeyDown(DashInput))
         {
             if (movementInput.normalized.magnitude > 0 && !isCollision && !isDashDelay)
                 StartCoroutine(Dash());
         }
 
-        if (!currentGun.isAutomatic)
+        // Стрельба.
+        if (HoldingBattery == null)
         {
-            if (Input.GetMouseButtonDown(0))
-                currentGun.Shoot();
-        }
+            if (!currentGun.isAutomatic)
+            {
+                if (Input.GetMouseButtonDown(0) && currentGun.IsReadyToShoot)
+                    currentGun.Shoot();
+            }
 
-        else
-        {
-            if (Input.GetMouseButton(0))
-                currentGun.Shoot();
+            else
+            {
+                if (Input.GetMouseButton(0) && currentGun.IsReadyToShoot)
+                    currentGun.Shoot();
+            }
         }
-
-        PlayerRotation();
     }
 
     void LateUpdate()
@@ -111,7 +114,6 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.E))
                 manager.SelectedInteractTarget.Interact();
-
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
@@ -212,12 +214,14 @@ public class PlayerController : MonoBehaviour
     {
         HoldingBattery.transform.SetParent(null);
         HoldingBattery.transform.position = newPosition;
+        currentGun.gameObject.SetActive(true);
         HoldingBattery = null;
     }
 
     public void TakeBattery(BatteryCell b)
     {
         HoldingBattery = b;
+        currentGun.gameObject.SetActive(false);
         HoldingBattery.transform.SetParent(transform);
     }
     #endregion

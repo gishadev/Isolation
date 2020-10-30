@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Core : InteractionTarget
+public class Core : MonoBehaviour, IInteractable
 {
     Accelerator[] accelerators;
 
@@ -10,7 +10,7 @@ public class Core : InteractionTarget
     }
 
     // Заряжаем все ускорители равномерно.
-    public override void Interact()
+    public void Interact()
     {
         PlayerController p = PlayerManager.Instance.player;
         if (p.HoldingBattery)
@@ -24,7 +24,7 @@ public class Core : InteractionTarget
         }
     }
 
-    public override bool IsReadyForInteraction()
+    public bool IsReadyForInteraction()
     {
         return PlayerManager.Instance.player.HoldingBattery != null;
     }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class Gun : MonoBehaviour
     public bool isAutomatic;
     public bool isEndlessAmmo;
     public int ammoCount;
+    public float delayBtwShots;
 
     [Header("Projectile")]
     public GameObject projectile;
@@ -14,6 +16,8 @@ public class Gun : MonoBehaviour
     public int projDmg;
 
     int ammo;
+
+    public bool IsReadyToShoot { private set; get; } = true;
 
     void Start()
     {
@@ -30,5 +34,14 @@ public class Gun : MonoBehaviour
 
         if (!isEndlessAmmo)
             ammo--;
+
+        StartCoroutine(Delay());
+    }
+
+    IEnumerator Delay()
+    {
+        IsReadyToShoot = false;
+        yield return new WaitForSeconds(delayBtwShots);
+        IsReadyToShoot = true;
     }
 }

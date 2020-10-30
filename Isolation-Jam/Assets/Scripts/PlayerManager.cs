@@ -7,18 +7,29 @@ public class PlayerManager : MonoBehaviour
     public static PlayerManager Instance { private set; get; }
     #endregion
 
-    [Header("Spawning")]
+    [Header("Spawning/Respawning")]
     public PlayerController player;
     public Transform playerSpawnpoint;
     public float respawnTime = 5f;
-    [Space]
+
+    [Header("Interactions")]
     public LayerMask interactableMask;
 
-    public InteractionTarget SelectedInteractTarget { get; private set; }
+    [Header("Guns")]
+    public GunData defaultGun;
+    public GunData[] customGuns;
+
+
+    public IInteractable SelectedInteractTarget { get; private set; }
 
     void Awake()
     {
         Instance = this;
+    }
+
+    void Start()
+    {
+        GiveGun(defaultGun);
     }
 
     void LateUpdate()
@@ -45,39 +56,69 @@ public class PlayerManager : MonoBehaviour
     void CheckForInteractionTarget()
     {
         // Проверяем, может ли определенная цель для взамодействия быть выбрана.
-        InteractionTarget temp = GetInteractTargetOnCursor();
-        if (temp != null
-            && Vector3.Distance(temp.transform.position, player.transform.position) < temp.interactableRadius
-            && temp.IsReadyForInteraction())
+        Transform temp = GetInteractTargetOnPos(player.transform.position);
+        IInteractable interactable = null;
+        if (temp != null)
+            temp.TryGetComponent(out interactable);
+
+        if (interactable != null && interactable.IsReadyForInteraction())
         {
-            SelectedInteractTarget = temp;
+            SelectedInteractTarget = interactable;
             UIManager.Instance.ShowInteractionText(temp.transform.position);
         }
-
         else
         {
             SelectedInteractTarget = null;
             UIManager.Instance.HideInteractionText();
         }
     }
-
-    InteractionTarget GetInteractTargetOnCursor()
+    Transform GetInteractTargetOnPos(Vector3 pos)
     {
-        Ray r = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
-        InteractionTarget result = null;
-
-        if (Physics.Raycast(r, out hitInfo))
+        Transform result = null;
+        Collider[] colls = Physics.OverlapSphere(pos, 0.5f, interactableMask);
+        if (colls.Length > 0)
         {
-            Collider[] colls = Physics.OverlapSphere(hitInfo.point, 0.5f, interactableMask);
-            if (colls.Length > 0)
-            {
-                colls[0].TryGetComponent(out result);
-            }
-                
+            result = colls[0].transform;
         }
 
         return result;
+    }
+    //InteractionTarget GetInteractTargetOnCursor()
+    //{
+    //    Ray r = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //    RaycastHit hitInfo;
+    //    InteractionTarget result = null;
+
+    //    if (Physics.Raycast(r, out hitInfo))
+    //    {
+    //        Collider[] colls = Physics.OverlapSphere(hitInfo.point, 0.5f, interactableMask);
+    //        if (colls.Length > 0)
+    //        {
+    //            colls[0].TryGetComponent(out result);
+    //        }
+
+    //    }
+
+    //    return result;
+    //}
+    #endregion
+
+    #region Gun Giving
+    public void GiveGun(GunData gunData)
+    {
+        // Убираем старую пушку.
+        if (player.currentGun != null)
+            Destroy(player.currentGun.gameObject);
+
+        // Спавним новую пушку.
+        Vector3 position = gunData.offsetPosition + player.transform.position;
+        Quaternion rotation = Quaternion.Euler(gunData.offsetRotation);
+        GameObject gunGO = Instantiate(gunData.prefab, position, rotation, player.transform);
+
+        Gun newGun = gunGO.GetComponent<Gun>();
+
+        // Назначаем новую пушку.
+        player.currentGun = newGun;
     }
     #endregion
 }
