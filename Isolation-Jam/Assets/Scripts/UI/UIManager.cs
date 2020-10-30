@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     public UIHealth health;
+    public UIGun gun;
     public GameObject interactionText;
 
     Camera cam;

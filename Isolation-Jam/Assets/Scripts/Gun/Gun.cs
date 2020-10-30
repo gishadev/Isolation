@@ -15,6 +15,15 @@ public class Gun : MonoBehaviour
     public float projSpeed;
     public int projDmg;
 
+    public int Ammo 
+    {
+        get => ammo; 
+        set
+        {
+            UIManager.Instance.gun.UpdateAmmoCount(value);
+            ammo = Mathf.Clamp(value, 0, ammoCount);
+        }
+    }
     int ammo;
 
     public bool IsReadyToShoot { private set; get; } = true;
@@ -22,7 +31,7 @@ public class Gun : MonoBehaviour
     void Start()
     {
         if (!isEndlessAmmo)
-            ammo = ammoCount;
+            Ammo = ammoCount;
     }
 
     public void Shoot()
@@ -33,7 +42,13 @@ public class Gun : MonoBehaviour
         proj.SetData(projSpeed, projDmg);
 
         if (!isEndlessAmmo)
-            ammo--;
+        {
+            Ammo--;
+
+            if (Ammo <= 0)
+                PlayerManager.Instance.GiveGun(PlayerManager.Instance.defaultGun);
+        }
+
 
         StartCoroutine(Delay());
     }

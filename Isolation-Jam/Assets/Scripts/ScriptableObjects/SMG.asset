@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 8825983035454495092, guid: fb3fa033de7919547ab42e0781810b46, type: 3}
   offsetPosition: {x: 0.44, y: 0, z: 0.14}
-  offsetRotation: {x: 0, y: 90, z: 17.669}
+  offsetRotation: {x: 0, y: 90, z: 25.972}

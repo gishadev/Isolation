@@ -111,14 +111,18 @@ public class PlayerManager : MonoBehaviour
             Destroy(player.currentGun.gameObject);
 
         // Спавним новую пушку.
-        Vector3 position = gunData.offsetPosition + player.transform.position;
-        Quaternion rotation = Quaternion.Euler(gunData.offsetRotation);
-        GameObject gunGO = Instantiate(gunData.prefab, position, rotation, player.transform);
+        GameObject gunGO = Instantiate(gunData.prefab, Vector3.zero, Quaternion.identity, player.transform);
+        gunGO.transform.localPosition = gunData.offsetPosition;
+        gunGO.transform.localRotation = Quaternion.Euler(gunData.offsetRotation);
 
         Gun newGun = gunGO.GetComponent<Gun>();
 
         // Назначаем новую пушку.
         player.currentGun = newGun;
+
+        // Обновляем UI
+        UIManager.Instance.gun.ResetGun(gunData);
+        UIManager.Instance.gun.UpdateAmmoCount(newGun.ammoCount);
     }
     #endregion
 }
