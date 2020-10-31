@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 3228755683896646532}
   - component: {fileID: 6290002816034994914}
   m_Layer: 10
-  m_Name: Enemy
+  m_Name: Default Melee Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -159,7 +159,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9ed2a21e0633c6842b9f78fdaf40f9d8, type: 2}
+  - {fileID: 2100000, guid: cd07d31a954f814429ba3f58a4d1eb2f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

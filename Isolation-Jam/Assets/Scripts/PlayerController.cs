@@ -46,7 +46,16 @@ public class PlayerController : MonoBehaviour
     public bool IsDashing { set; get; } = false;
 
     // Аккумулятор, который держит игрок.
-    public BatteryCell HoldingBattery { get; set; }
+    public BatteryCell HoldingBattery
+    {
+        get => _holdingBattery;
+        set
+        {
+            _holdingBattery = value;
+            ShowGun(value == null);
+        }
+    }
+    BatteryCell _holdingBattery;
     // Значение скорости при различных типах передвижения.
     float MovementSpeed { get => IsDashing ? dashSpeed : runSpeed; }
     // "Замедлитель" игрока, когда он несёт аккумулятор.
@@ -214,15 +223,21 @@ public class PlayerController : MonoBehaviour
     {
         HoldingBattery.transform.SetParent(null);
         HoldingBattery.transform.position = newPosition;
-        currentGun.gameObject.SetActive(true);
         HoldingBattery = null;
     }
 
     public void TakeBattery(BatteryCell b)
     {
         HoldingBattery = b;
-        currentGun.gameObject.SetActive(false);
         HoldingBattery.transform.SetParent(transform);
+    }
+    #endregion
+
+    #region Hide/Show Gun
+    void ShowGun(bool isShow)
+    {
+        if (currentGun != null)
+            currentGun.gameObject.SetActive(isShow);
     }
     #endregion
 

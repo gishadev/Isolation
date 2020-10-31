@@ -15,4 +15,9 @@ public class BatteryCell : MonoBehaviour, IInteractable
     {
         return PlayerManager.Instance.player.HoldingBattery == null;
     }
+
+    public void OnDestroy()
+    {
+        PlayerManager.Instance.player.HoldingBattery = null;
+    }
 }
