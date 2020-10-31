@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     bool isCollision = false;
     bool isDashDelay = false;
     Vector3 movementInput = Vector3.zero;
+    Vector3 lookDir;
     #endregion
 
     #region PROPERTIES
@@ -65,11 +66,13 @@ public class PlayerController : MonoBehaviour
     #region COMPONENTS
     Rigidbody rb;
     Camera cam;
+    PlayerAnimations pAnimations;
     #endregion
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        pAnimations = GetComponent<PlayerAnimations>();
         cam = Camera.main;
     }
 
@@ -87,7 +90,10 @@ public class PlayerController : MonoBehaviour
     {
         // Передвижение.
         if (!IsDashing)
+        {
             UpdateMovementInput();
+            pAnimations.UpdateMovementAnimationVel(lookDir, movementInput);
+        }
 
         // Поворот игрока.
         PlayerRotation();
@@ -179,8 +185,8 @@ public class PlayerController : MonoBehaviour
 
         if (Physics.Raycast(ray, out hitInfo))
         {
-            Vector3 dir = (hitInfo.point - transform.position).normalized;
-            float rotY = Mathf.Atan2(dir.z, -dir.x) * Mathf.Rad2Deg - 90f;
+            lookDir = (hitInfo.point - transform.position).normalized;
+            float rotY = Mathf.Atan2(lookDir.z, -lookDir.x) * Mathf.Rad2Deg - 90f;
             Quaternion rotation = Quaternion.Euler(Vector3.up * rotY);
             transform.rotation = rotation;
         }
@@ -261,5 +267,4 @@ public class PlayerController : MonoBehaviour
                 isCollision = false;
     }
     #endregion
-
 }
