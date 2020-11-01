@@ -80,11 +80,11 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MaxX: 30.5
-    - _MaxZ: 30.5
+    - _MaxX: 62.5
+    - _MaxZ: 62.5
     - _Metallic: 0
-    - _MinX: -31.5
-    - _MinZ: -31.5
+    - _MinX: -63.5
+    - _MinZ: -63.5
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Offset: 1

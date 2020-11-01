@@ -1,12 +1,29 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 public class Core : MonoBehaviour, IInteractable
 {
+    public MeshRenderer crystal;
+    public Material sampleEnergyMat;
+
+    float AvgPower { get => accelerators.Sum(x => x.Power) / accelerators.Length; }
+
     Accelerator[] accelerators;
+    Material energyMat;
+
+    void Awake()
+    {
+        accelerators = FindObjectsOfType<Accelerator>();
+    }
 
     void Start()
     {
-        accelerators = FindObjectsOfType<Accelerator>();
+        MaterialsRewriter.ResetMaterials(crystal, sampleEnergyMat, out energyMat);
+    }
+
+    void LateUpdate()
+    {
+        energyMat.SetFloat("_Energy", AvgPower);
     }
 
     // Заряжаем все ускорители равномерно.

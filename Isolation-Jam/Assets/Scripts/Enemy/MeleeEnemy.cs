@@ -5,37 +5,17 @@ public class MeleeEnemy : Enemy
     [Header("Melee")]
     public int damage = 15;
     public float knockbackForce = 1f;
-    public float attackDelay = 1.5f;
-    public float rayLength = 1f;
+    public float attackRadius = 1f;
     [Space]
     public LayerMask playerLayer;
-
-    float delay;
-
-    void Start()
-    {
-        delay = attackDelay;
-    }
 
     void Update()
     {
         // Враг движется к игроку и, останавливаясь на мин. дистанции, атакует его.
-        if (ForwardRaycast())
-        {
-            if (delay < 0)
-            {
-                Attack();
-                delay = attackDelay;
-            }
-        }
+        if (IsInPlayer())
+            Attack();
         else
-        {
             Agent.SetDestination(PlayerTrans.position);
-        }
-
-
-        if (delay > 0)
-            delay -= Time.deltaTime;
 
         if (Agent.velocity.normalized.magnitude == 0f)
             LockPointOfView(PlayerTrans.position);
@@ -46,6 +26,8 @@ public class MeleeEnemy : Enemy
         PlayerManager.Instance.player.AddHealth(-damage);
         Vector3 dir = (PlayerManager.Instance.player.transform.position - transform.position).normalized;
         PlayerManager.Instance.player.AddKnockback(dir * knockbackForce);
+
+        Destroy(gameObject);
     }
 
     void LockPointOfView(Vector3 target)
@@ -56,16 +38,8 @@ public class MeleeEnemy : Enemy
         transform.rotation = rotation;
     }
 
-    bool ForwardRaycast()
+    bool IsInPlayer()
     {
-        Ray ray = new Ray(transform.position, transform.forward);
-        RaycastHit hitInfo;
-
-        if (Physics.Raycast(ray, out hitInfo, rayLength, playerLayer))
-            return true;
-
-        Debug.DrawRay(transform.position, ray.direction * rayLength, Color.red, 0.1f);
-
-        return false;
+        return Physics.CheckSphere(transform.position, attackRadius, playerLayer) || !PlayerManager.Instance.player.IsDashing;
     }
 }

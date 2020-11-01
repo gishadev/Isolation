@@ -87,7 +87,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _ActivatedTint: {r: 0.7169812, g: 0.01690993, b: 0.6642877, a: 0}
+    - _ActivatedTint: {r: 0.5891537, g: 0.01568627, b: 0.7176471, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DeactivatedTint: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 0}

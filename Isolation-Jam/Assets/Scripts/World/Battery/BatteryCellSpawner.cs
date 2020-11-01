@@ -6,12 +6,13 @@ public class BatteryCellSpawner : MonoBehaviour
     [Header("Battery Spawning")]
     public GameObject batteryCellPrefab;
     public float spawnDelay = 15f;
-    public Material energyMatSample;
+    public Material sampleEnergyMat;
 
     bool IsHold { get => spawnedBattery != PlayerManager.Instance.player.HoldingBattery; }
 
     Material energyMat;
     BatteryCell spawnedBattery;
+
     MeshRenderer mr;
 
     void Awake()
@@ -21,28 +22,8 @@ public class BatteryCellSpawner : MonoBehaviour
 
     void Start()
     {
-        ResetMaterials();
+        MaterialsRewriter.ResetMaterials(mr, sampleEnergyMat, out energyMat);
         StartCoroutine(SpawnBattery());
-    }
-
-    // Обновляем коллекцию материалов для динамичного изменения.
-    void ResetMaterials()
-    {
-        Material[] newMats = new Material[mr.sharedMaterials.Length];
-
-        for (int i = 0; i < newMats.Length; i++)
-        {
-            if (mr.sharedMaterials[i] == energyMatSample)
-            {
-                energyMat = new Material(energyMatSample);
-                newMats[i] = energyMat;
-                continue;
-            }
-
-            newMats[i] = mr.sharedMaterials[i];
-        }
-
-        mr.materials = newMats;
     }
 
     IEnumerator SpawnBattery()

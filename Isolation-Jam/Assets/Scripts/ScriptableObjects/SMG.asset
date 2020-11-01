@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: SMG
   m_EditorClassIdentifier: 
   prefab: {fileID: 7958352873977869380, guid: fb3fa033de7919547ab42e0781810b46, type: 3}
+  gunIcon: {fileID: 21300000, guid: 92bac47a0acb7614494b8b8e3077ac90, type: 3}
   offsetPosition: {x: 0, y: 1.179, z: 0.722}
   offsetRotation: {x: 0, y: 180, z: 0}
   upperAnimationState: 1

@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
     void Awake()
     {
         Agent = GetComponent<NavMeshAgent>();
-        PlayerTrans = FindObjectOfType<PlayerController>().transform;
+        PlayerTrans = PlayerManager.Instance.player.transform;
     }
 
     public void TakeDamage(int dmg)

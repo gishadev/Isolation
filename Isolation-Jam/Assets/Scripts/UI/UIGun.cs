@@ -11,11 +11,19 @@ public class UIGun : MonoBehaviour
     public void ResetGun(GunData gunData)
     {
         gunNameText.text = gunData.name;
-        //gunImg.sprite = gunData.name;
+
+        gunImg.sprite = gunData.gunIcon;
+        gunImg.SetNativeSize();
     }
 
     public void UpdateAmmoCount(int count)
     {
         ammoText.text = count.ToString();
+    }
+
+    public void UpdateAmmoCount(bool isInf)
+    {
+        if (isInf)
+            ammoText.text = "INF";
     }
 }

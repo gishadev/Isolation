@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Sniper Rifle
   m_EditorClassIdentifier: 
   prefab: {fileID: 4217805495432937792, guid: d6d9da3e7b4dd9846968eace3ef768b8, type: 3}
+  gunIcon: {fileID: 21300000, guid: 71ea2256b6e0d6d4689f1c2f6addaa15, type: 3}
   offsetPosition: {x: 0, y: 1.119, z: 0.591}
   offsetRotation: {x: 0, y: 180, z: 0}
   upperAnimationState: 2

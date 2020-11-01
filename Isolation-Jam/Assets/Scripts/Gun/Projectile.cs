@@ -30,7 +30,7 @@ public class Projectile : MonoBehaviour
 
             DestroyProjectile();
         }
-        Debug.DrawRay(transform.position, -transform.right * 10f, Color.red);
+        Debug.DrawRay(transform.position, -transform.forward * 10f, Color.red);
     }
 
     public void SetData(float _projSpeed, int _projDmg)

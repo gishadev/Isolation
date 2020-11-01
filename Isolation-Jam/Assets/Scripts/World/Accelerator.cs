@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class Accelerator : MonoBehaviour, IInteractable
 {
@@ -9,20 +10,25 @@ public class Accelerator : MonoBehaviour, IInteractable
 
     float power;
 
+    public LineRenderer lrToWall;
+    public LineRenderer lrToCore;
+    Material rayMat;
+
     void Start()
     {
-        Charge();
+        Charge(1.0f);
+        MaterialsRewriter.ResetMaterials(lrToWall, out rayMat);
     }
 
     void FixedUpdate()
     {
-        // Пассивная разрядка ускорителя.
+        //Разрядка ускорителя.
         Power -= Time.fixedDeltaTime / fullDischargeTime;
-    }
 
-    public void Charge()
-    {
-        Power = 1.0f;
+        lrToWall.enabled = Power > 0;
+        lrToCore.enabled = Power > 0;
+
+        rayMat.SetFloat("_Energy", Power);
     }
 
     public void Charge(float value)
@@ -30,6 +36,7 @@ public class Accelerator : MonoBehaviour, IInteractable
         Power += value;
     }
 
+    #region IInteractable
     public void Interact()
     {
         PlayerController p = PlayerManager.Instance.player;
@@ -44,4 +51,5 @@ public class Accelerator : MonoBehaviour, IInteractable
     {
         return PlayerManager.Instance.player.HoldingBattery != null;
     }
+    #endregion
 }

@@ -9,6 +9,12 @@ public class BlackoutAlphaMask : MonoBehaviour
         get => CollapseManager.Instance.worldEdges.Select(x => x.wall).ToArray();
     }
 
+    // Corners.
+    public float MIN_X { get; private set; }
+    public float MAX_X { get; private set; }
+    public float MIN_Z { get; private set; }
+    public float MAX_Z { get; private set; }
+
     MeshRenderer mr;
 
     void Awake()
@@ -20,25 +26,20 @@ public class BlackoutAlphaMask : MonoBehaviour
     {
         // Обновляем маску.
         List<Vector3> corners = GetNearestCorners();
-        //Vector3 min = new Vector3(Mathf.Infinity, 0f, Mathf.Infinity);
-        //Vector3 max = new Vector3(Mathf.NegativeInfinity, 0f, Mathf.NegativeInfinity);
+        SetCorners(corners);
 
-        //for (int i = 0; i < corners.Count; i++)
-        //{
-        //    if (corners[i].x < min.x && corners[i].z < min.z)
-        //    {
-        //        min = corners[i];
-        //        continue;
-        //    }
+        mr.material.SetFloat("_MinX", MIN_X);
+        mr.material.SetFloat("_MaxX", MAX_X);
+        mr.material.SetFloat("_MinZ", MIN_Z);
+        mr.material.SetFloat("_MaxZ", MAX_Z);
+    }
 
-        //    if (corners[i].x > max.x && corners[i].z > max.z)
-        //        max = corners[i];
-        //}
-
-        mr.material.SetFloat("_MinX", corners.Select(f=>f.x).Min());
-        mr.material.SetFloat("_MaxX", corners.Select(f => f.x).Max() - 1f);
-        mr.material.SetFloat("_MinZ", corners.Select(f => f.z).Min());
-        mr.material.SetFloat("_MaxZ", corners.Select(f => f.z).Max() - 1f);
+    void SetCorners(List<Vector3> _corners)
+    {
+        MIN_X = _corners.Select(f => f.x).Min();
+        MAX_X = _corners.Select(f => f.x).Max() - 1f;
+        MIN_Z = _corners.Select(f => f.z).Min();
+        MAX_Z = _corners.Select(f => f.z).Max() - 1f;
     }
 
     List<Vector3> GetNearestCorners()

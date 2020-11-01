@@ -9,11 +9,7 @@ public class Gun : MonoBehaviour
     public int Ammo
     {
         get => ammo;
-        set
-        {
-            UIManager.Instance.gun.UpdateAmmoCount(value);
-            ammo = Mathf.Clamp(value, 0, gunData.ammoCount);
-        }
+        set => ammo = Mathf.Clamp(value, 0, gunData.ammoCount);
     }
     int ammo;
 
@@ -34,6 +30,7 @@ public class Gun : MonoBehaviour
         if (!gunData.isEndlessAmmo)
         {
             Ammo--;
+            UIManager.Instance.gun.UpdateAmmoCount(Ammo);
 
             if (Ammo <= 0)
                 PlayerManager.Instance.GiveGun(PlayerManager.Instance.defaultGun);

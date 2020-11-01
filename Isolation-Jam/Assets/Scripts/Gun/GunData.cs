@@ -5,6 +5,7 @@ public class GunData : ScriptableObject
 {
     [Header("For Spawning")]
     public GameObject prefab;
+    public Sprite gunIcon;
     [Space]
     public Vector3 offsetPosition;
     public Vector3 offsetRotation;

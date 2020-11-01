@@ -122,8 +122,11 @@ public class PlayerManager : MonoBehaviour
 
         // Обновляем UI.
         UIManager.Instance.gun.ResetGun(gunData);
-        UIManager.Instance.gun.UpdateAmmoCount(newGun.gunData.ammoCount);
 
+        if (gunData.isEndlessAmmo)
+            UIManager.Instance.gun.UpdateAmmoCount(true);
+        else
+            UIManager.Instance.gun.UpdateAmmoCount(newGun.gunData.ammoCount);
         // Обновляем анимацию.
         player.pAnimations.UpdateUpperState(newGun.gunData.upperAnimationState);
 
