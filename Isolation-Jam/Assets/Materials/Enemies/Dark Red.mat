@@ -55,6 +55,7 @@ Material:
     - _Cull: 2
     - _Cutoff: 0.5
     - _DstBlend: 0
+    - _EmissionIntensity: 1
     - _EnvironmentReflections: 1
     - _ExtrAmount: 1.8115525
     - _ExtrPoint: 0.01

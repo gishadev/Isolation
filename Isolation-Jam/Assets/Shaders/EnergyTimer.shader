@@ -1,15 +1,15 @@
 // Made with Amplify Shader Editor
 // Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "MyShaders/Enemy"
+Shader "MyShaders/EnergyTimer"
 {
 	Properties
 	{
 		[HideInInspector] _AlphaCutoff("Alpha Cutoff ", Range(0, 1)) = 0.5
-		[ASEBegin]_EmissionColor("EmissionColor", Color) = (0,0,0,0)
-		_EmissionIntensity("EmissionIntensity", Float) = 0
-		_NoiseScale("NoiseScale", Float) = 0
-		_ExtrPower("ExtrPower", Range( 0 , 1)) = 0.04643123
-		[ASEEnd]_ExtrSpeed("ExtrSpeed", Float) = 0
+		[HideInInspector] _EmissionColor("Emission Color", Color) = (1,1,1,1)
+		[ASEBegin]_Progress("Progress", Range( 0 , 1)) = 0
+		_ActivatedTint("ActivatedTint", Color) = (0,1,0.9063735,0)
+		_DeactivatedTint("DeactivatedTint", Color) = (0,0,0,0)
+		[ASEEnd]_Albedo("Albedo", Color) = (0.4528302,0.4528302,0.4528302,0)
 
 		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
 		//_TransStrength( "Trans Strength", Range( 0, 50 ) ) = 1
@@ -193,8 +193,7 @@ Shader "MyShaders/Enemy"
 			    #define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
-			#define ASE_NEEDS_VERT_NORMAL
-
+			
 
 			struct VertexInput
 			{
@@ -227,11 +226,10 @@ Shader "MyShaders/Enemy"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _EmissionColor;
-			float _ExtrSpeed;
-			float _NoiseScale;
-			float _ExtrPower;
-			float _EmissionIntensity;
+			float4 _Albedo;
+			float4 _DeactivatedTint;
+			float4 _ActivatedTint;
+			float _Progress;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -254,35 +252,7 @@ Shader "MyShaders/Enemy"
 			CBUFFER_END
 			
 
-			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
-			float snoise( float2 v )
-			{
-				const float4 C = float4( 0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439 );
-				float2 i = floor( v + dot( v, C.yy ) );
-				float2 x0 = v - i + dot( i, C.xx );
-				float2 i1;
-				i1 = ( x0.x > x0.y ) ? float2( 1.0, 0.0 ) : float2( 0.0, 1.0 );
-				float4 x12 = x0.xyxy + C.xxzz;
-				x12.xy -= i1;
-				i = mod2D289( i );
-				float3 p = permute( permute( i.y + float3( 0.0, i1.y, 1.0 ) ) + i.x + float3( 0.0, i1.x, 1.0 ) );
-				float3 m = max( 0.5 - float3( dot( x0, x0 ), dot( x12.xy, x12.xy ), dot( x12.zw, x12.zw ) ), 0.0 );
-				m = m * m;
-				m = m * m;
-				float3 x = 2.0 * frac( p * C.www ) - 1.0;
-				float3 h = abs( x ) - 0.5;
-				float3 ox = floor( x + 0.5 );
-				float3 a0 = x - ox;
-				m *= 1.79284291400159 - 0.85373472095314 * ( a0 * a0 + h * h );
-				float3 g;
-				g.x = a0.x * x0.x + h.x * x0.y;
-				g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-				return 130.0 * dot( m, g );
-			}
 			
-
 			VertexOutput VertexFunction( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -290,18 +260,13 @@ Shader "MyShaders/Enemy"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				float2 temp_cast_0 = (_ExtrSpeed).xx;
-				float2 panner43 = ( ( _TimeParameters.x * 0.05 ) * temp_cast_0 + v.ase_normal.xy);
-				float simplePerlin2D30 = snoise( panner43*_NoiseScale );
-				simplePerlin2D30 = simplePerlin2D30*0.5 + 0.5;
-				float3 appendResult32 = (float3(_ExtrPower , _ExtrPower , _ExtrPower));
 				
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = (float3( 0,0,0 ) + (( v.ase_normal * simplePerlin2D30 ) - float3( 0,0,0 )) * (appendResult32 - float3( 0,0,0 )) / (float3( 1,1,1 ) - float3( 0,0,0 )));
+				float3 vertexValue = defaultVertexValue;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -471,10 +436,11 @@ Shader "MyShaders/Enemy"
 	
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
+				float4 lerpResult7 = lerp( _DeactivatedTint , _ActivatedTint , _Progress);
 				
-				float3 Albedo = float3(0.5, 0.5, 0.5);
+				float3 Albedo = _Albedo.rgb;
 				float3 Normal = float3(0, 0, 1);
-				float3 Emission = ( _EmissionColor * _EmissionIntensity ).rgb;
+				float3 Emission = lerpResult7.rgb;
 				float3 Specular = 0.5;
 				float Metallic = 0;
 				float Smoothness = 0.5;
@@ -655,8 +621,7 @@ Shader "MyShaders/Enemy"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
-			#define ASE_NEEDS_VERT_NORMAL
-
+			
 
 			struct VertexInput
 			{
@@ -681,11 +646,10 @@ Shader "MyShaders/Enemy"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _EmissionColor;
-			float _ExtrSpeed;
-			float _NoiseScale;
-			float _ExtrPower;
-			float _EmissionIntensity;
+			float4 _Albedo;
+			float4 _DeactivatedTint;
+			float4 _ActivatedTint;
+			float _Progress;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -708,35 +672,7 @@ Shader "MyShaders/Enemy"
 			CBUFFER_END
 			
 
-			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
-			float snoise( float2 v )
-			{
-				const float4 C = float4( 0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439 );
-				float2 i = floor( v + dot( v, C.yy ) );
-				float2 x0 = v - i + dot( i, C.xx );
-				float2 i1;
-				i1 = ( x0.x > x0.y ) ? float2( 1.0, 0.0 ) : float2( 0.0, 1.0 );
-				float4 x12 = x0.xyxy + C.xxzz;
-				x12.xy -= i1;
-				i = mod2D289( i );
-				float3 p = permute( permute( i.y + float3( 0.0, i1.y, 1.0 ) ) + i.x + float3( 0.0, i1.x, 1.0 ) );
-				float3 m = max( 0.5 - float3( dot( x0, x0 ), dot( x12.xy, x12.xy ), dot( x12.zw, x12.zw ) ), 0.0 );
-				m = m * m;
-				m = m * m;
-				float3 x = 2.0 * frac( p * C.www ) - 1.0;
-				float3 h = abs( x ) - 0.5;
-				float3 ox = floor( x + 0.5 );
-				float3 a0 = x - ox;
-				m *= 1.79284291400159 - 0.85373472095314 * ( a0 * a0 + h * h );
-				float3 g;
-				g.x = a0.x * x0.x + h.x * x0.y;
-				g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-				return 130.0 * dot( m, g );
-			}
 			
-
 			float3 _LightDirection;
 
 			VertexOutput VertexFunction( VertexInput v )
@@ -746,18 +682,13 @@ Shader "MyShaders/Enemy"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
-				float2 temp_cast_0 = (_ExtrSpeed).xx;
-				float2 panner43 = ( ( _TimeParameters.x * 0.05 ) * temp_cast_0 + v.ase_normal.xy);
-				float simplePerlin2D30 = snoise( panner43*_NoiseScale );
-				simplePerlin2D30 = simplePerlin2D30*0.5 + 0.5;
-				float3 appendResult32 = (float3(_ExtrPower , _ExtrPower , _ExtrPower));
 				
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = (float3( 0,0,0 ) + (( v.ase_normal * simplePerlin2D30 ) - float3( 0,0,0 )) * (appendResult32 - float3( 0,0,0 )) / (float3( 1,1,1 ) - float3( 0,0,0 )));
+				float3 vertexValue = defaultVertexValue;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -941,8 +872,7 @@ Shader "MyShaders/Enemy"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
-			#define ASE_NEEDS_VERT_NORMAL
-
+			
 
 			struct VertexInput
 			{
@@ -967,11 +897,10 @@ Shader "MyShaders/Enemy"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _EmissionColor;
-			float _ExtrSpeed;
-			float _NoiseScale;
-			float _ExtrPower;
-			float _EmissionIntensity;
+			float4 _Albedo;
+			float4 _DeactivatedTint;
+			float4 _ActivatedTint;
+			float _Progress;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -994,35 +923,7 @@ Shader "MyShaders/Enemy"
 			CBUFFER_END
 			
 
-			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
-			float snoise( float2 v )
-			{
-				const float4 C = float4( 0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439 );
-				float2 i = floor( v + dot( v, C.yy ) );
-				float2 x0 = v - i + dot( i, C.xx );
-				float2 i1;
-				i1 = ( x0.x > x0.y ) ? float2( 1.0, 0.0 ) : float2( 0.0, 1.0 );
-				float4 x12 = x0.xyxy + C.xxzz;
-				x12.xy -= i1;
-				i = mod2D289( i );
-				float3 p = permute( permute( i.y + float3( 0.0, i1.y, 1.0 ) ) + i.x + float3( 0.0, i1.x, 1.0 ) );
-				float3 m = max( 0.5 - float3( dot( x0, x0 ), dot( x12.xy, x12.xy ), dot( x12.zw, x12.zw ) ), 0.0 );
-				m = m * m;
-				m = m * m;
-				float3 x = 2.0 * frac( p * C.www ) - 1.0;
-				float3 h = abs( x ) - 0.5;
-				float3 ox = floor( x + 0.5 );
-				float3 a0 = x - ox;
-				m *= 1.79284291400159 - 0.85373472095314 * ( a0 * a0 + h * h );
-				float3 g;
-				g.x = a0.x * x0.x + h.x * x0.y;
-				g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-				return 130.0 * dot( m, g );
-			}
 			
-
 			VertexOutput VertexFunction( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -1030,18 +931,13 @@ Shader "MyShaders/Enemy"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				float2 temp_cast_0 = (_ExtrSpeed).xx;
-				float2 panner43 = ( ( _TimeParameters.x * 0.05 ) * temp_cast_0 + v.ase_normal.xy);
-				float simplePerlin2D30 = snoise( panner43*_NoiseScale );
-				simplePerlin2D30 = simplePerlin2D30*0.5 + 0.5;
-				float3 appendResult32 = (float3(_ExtrPower , _ExtrPower , _ExtrPower));
 				
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = (float3( 0,0,0 ) + (( v.ase_normal * simplePerlin2D30 ) - float3( 0,0,0 )) * (appendResult32 - float3( 0,0,0 )) / (float3( 1,1,1 ) - float3( 0,0,0 )));
+				float3 vertexValue = defaultVertexValue;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -1210,8 +1106,7 @@ Shader "MyShaders/Enemy"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
-			#define ASE_NEEDS_VERT_NORMAL
-
+			
 
 			#pragma shader_feature _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
@@ -1240,11 +1135,10 @@ Shader "MyShaders/Enemy"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _EmissionColor;
-			float _ExtrSpeed;
-			float _NoiseScale;
-			float _ExtrPower;
-			float _EmissionIntensity;
+			float4 _Albedo;
+			float4 _DeactivatedTint;
+			float4 _ActivatedTint;
+			float _Progress;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1267,35 +1161,7 @@ Shader "MyShaders/Enemy"
 			CBUFFER_END
 			
 
-			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
-			float snoise( float2 v )
-			{
-				const float4 C = float4( 0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439 );
-				float2 i = floor( v + dot( v, C.yy ) );
-				float2 x0 = v - i + dot( i, C.xx );
-				float2 i1;
-				i1 = ( x0.x > x0.y ) ? float2( 1.0, 0.0 ) : float2( 0.0, 1.0 );
-				float4 x12 = x0.xyxy + C.xxzz;
-				x12.xy -= i1;
-				i = mod2D289( i );
-				float3 p = permute( permute( i.y + float3( 0.0, i1.y, 1.0 ) ) + i.x + float3( 0.0, i1.x, 1.0 ) );
-				float3 m = max( 0.5 - float3( dot( x0, x0 ), dot( x12.xy, x12.xy ), dot( x12.zw, x12.zw ) ), 0.0 );
-				m = m * m;
-				m = m * m;
-				float3 x = 2.0 * frac( p * C.www ) - 1.0;
-				float3 h = abs( x ) - 0.5;
-				float3 ox = floor( x + 0.5 );
-				float3 a0 = x - ox;
-				m *= 1.79284291400159 - 0.85373472095314 * ( a0 * a0 + h * h );
-				float3 g;
-				g.x = a0.x * x0.x + h.x * x0.y;
-				g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-				return 130.0 * dot( m, g );
-			}
 			
-
 			VertexOutput VertexFunction( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -1303,11 +1169,6 @@ Shader "MyShaders/Enemy"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				float2 temp_cast_0 = (_ExtrSpeed).xx;
-				float2 panner43 = ( ( _TimeParameters.x * 0.05 ) * temp_cast_0 + v.ase_normal.xy);
-				float simplePerlin2D30 = snoise( panner43*_NoiseScale );
-				simplePerlin2D30 = simplePerlin2D30*0.5 + 0.5;
-				float3 appendResult32 = (float3(_ExtrPower , _ExtrPower , _ExtrPower));
 				
 				
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
@@ -1315,7 +1176,7 @@ Shader "MyShaders/Enemy"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = (float3( 0,0,0 ) + (( v.ase_normal * simplePerlin2D30 ) - float3( 0,0,0 )) * (appendResult32 - float3( 0,0,0 )) / (float3( 1,1,1 ) - float3( 0,0,0 )));
+				float3 vertexValue = defaultVertexValue;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -1442,10 +1303,11 @@ Shader "MyShaders/Enemy"
 					#endif
 				#endif
 
+				float4 lerpResult7 = lerp( _DeactivatedTint , _ActivatedTint , _Progress);
 				
 				
-				float3 Albedo = float3(0.5, 0.5, 0.5);
-				float3 Emission = ( _EmissionColor * _EmissionIntensity ).rgb;
+				float3 Albedo = _Albedo.rgb;
+				float3 Emission = lerpResult7.rgb;
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 
@@ -1499,8 +1361,7 @@ Shader "MyShaders/Enemy"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			
-			#define ASE_NEEDS_VERT_NORMAL
-
+			
 
 			#pragma shader_feature _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
@@ -1527,11 +1388,10 @@ Shader "MyShaders/Enemy"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _EmissionColor;
-			float _ExtrSpeed;
-			float _NoiseScale;
-			float _ExtrPower;
-			float _EmissionIntensity;
+			float4 _Albedo;
+			float4 _DeactivatedTint;
+			float4 _ActivatedTint;
+			float _Progress;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1554,35 +1414,7 @@ Shader "MyShaders/Enemy"
 			CBUFFER_END
 			
 
-			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
-			float snoise( float2 v )
-			{
-				const float4 C = float4( 0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439 );
-				float2 i = floor( v + dot( v, C.yy ) );
-				float2 x0 = v - i + dot( i, C.xx );
-				float2 i1;
-				i1 = ( x0.x > x0.y ) ? float2( 1.0, 0.0 ) : float2( 0.0, 1.0 );
-				float4 x12 = x0.xyxy + C.xxzz;
-				x12.xy -= i1;
-				i = mod2D289( i );
-				float3 p = permute( permute( i.y + float3( 0.0, i1.y, 1.0 ) ) + i.x + float3( 0.0, i1.x, 1.0 ) );
-				float3 m = max( 0.5 - float3( dot( x0, x0 ), dot( x12.xy, x12.xy ), dot( x12.zw, x12.zw ) ), 0.0 );
-				m = m * m;
-				m = m * m;
-				float3 x = 2.0 * frac( p * C.www ) - 1.0;
-				float3 h = abs( x ) - 0.5;
-				float3 ox = floor( x + 0.5 );
-				float3 a0 = x - ox;
-				m *= 1.79284291400159 - 0.85373472095314 * ( a0 * a0 + h * h );
-				float3 g;
-				g.x = a0.x * x0.x + h.x * x0.y;
-				g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-				return 130.0 * dot( m, g );
-			}
 			
-
 			VertexOutput VertexFunction( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -1590,11 +1422,6 @@ Shader "MyShaders/Enemy"
 				UNITY_TRANSFER_INSTANCE_ID( v, o );
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
-				float2 temp_cast_0 = (_ExtrSpeed).xx;
-				float2 panner43 = ( ( _TimeParameters.x * 0.05 ) * temp_cast_0 + v.ase_normal.xy);
-				float simplePerlin2D30 = snoise( panner43*_NoiseScale );
-				simplePerlin2D30 = simplePerlin2D30*0.5 + 0.5;
-				float3 appendResult32 = (float3(_ExtrPower , _ExtrPower , _ExtrPower));
 				
 				
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
@@ -1602,7 +1429,7 @@ Shader "MyShaders/Enemy"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = (float3( 0,0,0 ) + (( v.ase_normal * simplePerlin2D30 ) - float3( 0,0,0 )) * (appendResult32 - float3( 0,0,0 )) / (float3( 1,1,1 ) - float3( 0,0,0 )));
+				float3 vertexValue = defaultVertexValue;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -1728,7 +1555,7 @@ Shader "MyShaders/Enemy"
 
 				
 				
-				float3 Albedo = float3(0.5, 0.5, 0.5);
+				float3 Albedo = _Albedo.rgb;
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 
@@ -1751,41 +1578,22 @@ Shader "MyShaders/Enemy"
 }
 /*ASEBEGIN
 Version=18600
-254;402;631;295;339.5238;100.4915;1;False;False
-Node;AmplifyShaderEditor.NormalVertexDataNode;44;-1228.225,-109.3843;Inherit;False;0;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RangedFloatNode;36;-1168.728,270.1261;Inherit;False;Property;_ExtrSpeed;ExtrSpeed;4;0;Create;True;0;0;False;0;False;0;10;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.TimeNode;33;-1186.812,356.7168;Inherit;False;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RangedFloatNode;22;-972.9194,407.7224;Inherit;False;Property;_NoiseScale;NoiseScale;2;0;Create;True;0;0;False;0;False;0;2;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.PannerNode;43;-988.0422,243.7007;Inherit;False;3;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;1;FLOAT;1;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.RangedFloatNode;25;-737.5636,451.5798;Inherit;False;Property;_ExtrPower;ExtrPower;3;0;Create;True;0;0;False;0;False;0.04643123;0.1647059;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.NoiseGeneratorNode;30;-790.5651,211.3655;Inherit;True;Simplex2D;True;False;2;0;FLOAT2;0,0;False;1;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;39;-334.6777,196.6591;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT;0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.DynamicAppendNode;32;-429.1106,337.2948;Inherit;False;FLOAT3;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.TFHCRemapNode;28;-178.8482,197.5126;Inherit;False;5;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;1,1,1;False;3;FLOAT3;0,0,0;False;4;FLOAT3;1,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.ColorNode;6;-315.2167,-151.0123;Inherit;False;Property;_EmissionColor;EmissionColor;0;0;Create;True;0;0;False;0;False;0,0,0,0;1,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RangedFloatNode;46;-290.4156,72.80927;Inherit;False;Property;_EmissionIntensity;EmissionIntensity;1;0;Create;True;0;0;False;0;False;0;1;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;45;-85.61553,2.409311;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;2;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;True;0;False;-1;True;0;False;-1;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;False;False;False;False;False;False;False;False;True;0;False;-1;False;False;False;False;False;False;True;1;False;-1;True;3;False;-1;False;True;1;LightMode=ShadowCaster;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;1;42.84178,-9.345391;Float;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;MyShaders/Enemy;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;17;False;False;False;False;False;False;False;False;True;0;False;-1;True;0;False;-1;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;True;1;1;False;-1;0;False;-1;1;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=UniversalForward;False;0;Hidden/InternalErrorShader;0;0;Standard;36;Workflow;1;Surface;0;  Refraction Model;0;  Blend;0;Two Sided;1;Fragment Normal Space,InvertActionOnDeselection;0;Transmission;0;  Transmission Shadow;0.5,False,-1;Translucency;0;  Translucency Strength;1,False,-1;  Normal Distortion;0.5,False,-1;  Scattering;2,False,-1;  Direct;0.9,False,-1;  Ambient;0.1,False,-1;  Shadow;0.5,False,-1;Cast Shadows;1;  Use Shadow Threshold;0;Receive Shadows;1;GPU Instancing;1;LOD CrossFade;1;Built-in Fog;1;_FinalColorxAlpha;0;Meta Pass;1;Override Baked GI;0;Extra Pre Pass;0;DOTS Instancing;0;Tessellation;0;  Phong;0;  Strength;0.5,False,-1;  Type;0;  Tess;16,False,-1;  Min;10,False,-1;  Max;25,False,-1;  Edge Length;16,False,-1;  Max Displacement;25,False,-1;Vertex Position,InvertActionOnDeselection;1;0;6;False;True;True;True;True;True;False;;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;0;42.84178,-9.345391;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;True;0;False;-1;True;0;False;-1;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;True;1;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;True;0;False;-1;True;True;True;True;True;0;False;-1;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;0;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;4;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;True;0;False;-1;True;0;False;-1;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;False;False;False;False;False;False;False;False;False;True;2;False;-1;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;3;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;True;0;False;-1;True;0;False;-1;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;False;False;False;False;0;False;-1;False;False;False;False;True;1;False;-1;False;False;True;1;LightMode=DepthOnly;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;5;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;True;0;False;-1;True;0;False;-1;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;True;1;1;False;-1;0;False;-1;1;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=Universal2D;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-WireConnection;43;0;44;0
-WireConnection;43;2;36;0
-WireConnection;43;1;33;1
-WireConnection;30;0;43;0
-WireConnection;30;1;22;0
-WireConnection;39;0;44;0
-WireConnection;39;1;30;0
-WireConnection;32;0;25;0
-WireConnection;32;1;25;0
-WireConnection;32;2;25;0
-WireConnection;28;0;39;0
-WireConnection;28;4;32;0
-WireConnection;45;0;6;0
-WireConnection;45;1;46;0
-WireConnection;1;2;45;0
-WireConnection;1;8;28;0
+234;362;666;335;775.7968;181.2374;2.003782;False;False
+Node;AmplifyShaderEditor.ColorNode;9;-626.245,-159.6166;Inherit;False;Property;_DeactivatedTint;DeactivatedTint;2;0;Create;True;0;0;False;0;False;0,0,0,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ColorNode;8;-629.4451,17.58334;Inherit;False;Property;_ActivatedTint;ActivatedTint;1;0;Create;True;0;0;False;0;False;0,1,0.9063735,0;0,1,0.9063735,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.LerpOp;7;-238.1457,90.38334;Inherit;True;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.ColorNode;10;-265.2756,-271.9227;Inherit;False;Property;_Albedo;Albedo;3;0;Create;True;0;0;False;0;False;0.4528302,0.4528302,0.4528302,0;0.4528302,0.4528302,0.4528302,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.RangedFloatNode;6;-550.3576,286.4139;Inherit;False;Property;_Progress;Progress;0;0;Create;True;0;0;False;0;False;0;1;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;5;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;True;0;False;-1;True;0;False;-1;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;True;1;1;False;-1;0;False;-1;1;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=Universal2D;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;4;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;True;0;False;-1;True;0;False;-1;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;False;False;False;False;False;False;False;False;False;True;2;False;-1;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;3;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;True;0;False;-1;True;0;False;-1;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;False;False;False;False;0;False;-1;False;False;False;False;True;1;False;-1;False;False;True;1;LightMode=DepthOnly;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;2;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;True;0;False;-1;True;0;False;-1;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;False;False;False;False;False;False;False;False;True;0;False;-1;False;False;False;False;False;False;True;1;False;-1;True;3;False;-1;False;True;1;LightMode=ShadowCaster;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;1;0,0;Float;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;MyShaders/EnergyTimer;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;17;False;False;False;False;False;False;False;False;True;0;False;-1;True;0;False;-1;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;True;1;1;False;-1;0;False;-1;1;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=UniversalForward;False;0;Hidden/InternalErrorShader;0;0;Standard;36;Workflow;1;Surface;0;  Refraction Model;0;  Blend;0;Two Sided;1;Fragment Normal Space,InvertActionOnDeselection;0;Transmission;0;  Transmission Shadow;0.5,False,-1;Translucency;0;  Translucency Strength;1,False,-1;  Normal Distortion;0.5,False,-1;  Scattering;2,False,-1;  Direct;0.9,False,-1;  Ambient;0.1,False,-1;  Shadow;0.5,False,-1;Cast Shadows;1;  Use Shadow Threshold;0;Receive Shadows;1;GPU Instancing;1;LOD CrossFade;1;Built-in Fog;1;_FinalColorxAlpha;0;Meta Pass;1;Override Baked GI;0;Extra Pre Pass;0;DOTS Instancing;0;Tessellation;0;  Phong;0;  Strength;0.5,False,-1;  Type;0;  Tess;16,False,-1;  Min;10,False,-1;  Max;25,False,-1;  Edge Length;16,False,-1;  Max Displacement;25,False,-1;Vertex Position,InvertActionOnDeselection;1;0;6;False;True;True;True;True;True;False;;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;0;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;True;0;False;-1;True;0;False;-1;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;True;1;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;True;0;False;-1;True;True;True;True;True;0;False;-1;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;0;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+WireConnection;7;0;9;0
+WireConnection;7;1;8;0
+WireConnection;7;2;6;0
+WireConnection;1;0;10;0
+WireConnection;1;2;7;0
 ASEEND*/
-//CHKSM=4E9F82226B1BC1E79D57A5CE3AB93CDBBECEA813
+//CHKSM=C3D2359951B09605FB83C37BB423374F8C2F917B

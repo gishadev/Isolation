@@ -4,14 +4,21 @@ public class PlayerAnimations : MonoBehaviour
 {
     Animator animator;
 
+    int upperState = 0;
+
     void Awake()
     {
-        animator = GetComponent<Animator>();    
+        animator = GetComponent<Animator>();
     }
 
+    void LateUpdate()
+    {
+        animator.SetInteger("UpperState", upperState);
+    }
+
+    // Обновление анимации бега на основе BlendTree.
     public void UpdateMovementAnimationVel(Vector3 lookDir, Vector3 movementInput)
     {
-        // Movement Animation.
         Vector3 d = GetMovementDir(lookDir, movementInput);
 
         if (movementInput.z < 0)
@@ -22,12 +29,7 @@ public class PlayerAnimations : MonoBehaviour
         animator.SetFloat("Z", d.z);
     }
 
-    // 0 - 2 (Empty, Pistol, Rifle)
-    public void UpdateUpperState(int state)
-    {
-        animator.SetInteger("UpperState", state);
-    }
-
+    // Просчёт направления для анимации бега.
     Vector3 GetMovementDir(Vector3 lookDir, Vector3 moveVel)
     {
         float v = Mathf.Clamp(Vector3.Dot(moveVel, lookDir), -1f, 1f);
@@ -36,5 +38,12 @@ public class PlayerAnimations : MonoBehaviour
         float h = Mathf.Clamp(Vector3.Dot(moveVel, lookPerp), -1f, 1f);
 
         return new Vector3(h, 0f, v);
+    }
+
+
+    // 0 - 2 (Empty, Pistol, Rifle)
+    public void UpdateUpperState(int state)
+    {
+        upperState = state;
     }
 }

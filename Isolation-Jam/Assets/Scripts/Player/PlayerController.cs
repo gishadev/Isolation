@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     public float runSpeed = 500f;
     public float accelerationSpeed = 15f;
 
+    public Transform batteryHoldingPoint;
+
     [Header("Dash")]
     public KeyCode DashInput;
     public float dashSpeed = 1000f;
@@ -128,7 +130,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             if (HoldingBattery != null)
-                DropBattery(transform.position);
+                DropBattery();
         }
     }
 
@@ -208,7 +210,7 @@ public class PlayerController : MonoBehaviour
         gameObject.SetActive(false);
 
         if (HoldingBattery != null)
-            DropBattery(transform.position);
+            DropBattery();
 
         IsDashing = false;
         isCollision = false;
@@ -219,10 +221,9 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Carry Battery
-    public void DropBattery(Vector3 newPosition)
+    public void DropBattery()
     {
         HoldingBattery.transform.SetParent(null);
-        HoldingBattery.transform.position = newPosition;
         HoldingBattery = null;
 
         ShowGun(true);
@@ -231,7 +232,8 @@ public class PlayerController : MonoBehaviour
     public void TakeBattery(BatteryCell b)
     {
         HoldingBattery = b;
-        HoldingBattery.transform.SetParent(transform);
+        HoldingBattery.transform.SetParent(batteryHoldingPoint);
+        HoldingBattery.transform.position = batteryHoldingPoint.position;
 
         ShowGun(false);
     }
@@ -245,8 +247,9 @@ public class PlayerController : MonoBehaviour
             currentGun.gameObject.SetActive(isShow);
             pAnimations.UpdateUpperState(currentGun.gunData.upperAnimationState);
         }
-        else
-            pAnimations.UpdateUpperState(0);
+
+        if (currentGun == null || !isShow)
+            pAnimations.UpdateUpperState(3);
     }
     #endregion
 

@@ -7,10 +7,10 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Red
-  m_Shader: {fileID: 4800000, guid: 5f3e81bb9b16c274d94967f161d02c14, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 4
+  m_Name: EnergyTimer
+  m_Shader: {fileID: 4800000, guid: 19b999c56461524499c70bb8258f553a, type: 3}
+  m_ShaderKeywords: _EMISSION
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -55,20 +55,13 @@ Material:
     - _Cull: 2
     - _Cutoff: 0.5
     - _DstBlend: 0
-    - _EmissionIntensity: 0.8
     - _EnvironmentReflections: 1
-    - _ExtrAmount: 1.8115525
-    - _ExtrBounds: 0.05
-    - _ExtrPoint: 0.01
-    - _ExtrPower: 0.16470589
-    - _ExtrSpeed: 10
-    - _Float3: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
-    - _NoiseScale: 2
     - _OcclusionStrength: 1
+    - _Progress: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
@@ -79,13 +72,14 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _Albedo: {r: 0.9056604, g: 0, b: 0, a: 0}
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 1, g: 0, b: 0, a: 0}
+    - _ActivatedTint: {r: 0, g: 1, b: 0.9063735, a: 0}
+    - _BaseColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Color: {r: 0, g: 0.78541684, b: 1, a: 1}
+    - _DeactivatedTint: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissionColor: {r: 0, g: 0.8527436, b: 1, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &3377116216656218478
+--- !u!114 &5850106659314228829
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

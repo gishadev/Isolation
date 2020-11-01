@@ -1235,6 +1235,36 @@ Transform:
   m_Father: {fileID: 3271209931307726211}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -65.36933, y: 46.403423, z: -76.31529}
+--- !u!1 &6539949505787474355
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7171963448219072603}
+  m_Layer: 8
+  m_Name: Battery Holding Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7171963448219072603
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6539949505787474355}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8146722846693858076}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6563778889172549223
 GameObject:
   m_ObjectHideFlags: 0
@@ -1765,6 +1795,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7483013688403615462}
+  - {fileID: 7171963448219072603}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1829,7 +1860,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d606a5e9a27f7d49b7feacd0620e3db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 7483288280408684961}
 --- !u!114 &8146722846693858077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1846,6 +1876,7 @@ MonoBehaviour:
   currentGun: {fileID: 0}
   runSpeed: 500
   accelerationSpeed: 15
+  batteryHoldingPoint: {fileID: 7171963448219072603}
   DashInput: 32
   dashSpeed: 1350
   dashDist: 6.5
