@@ -27,8 +27,8 @@ public class PlayerController : MonoBehaviour
 
     bool isCollision = false;
     bool isDashDelay = false;
-    Vector3 movementInput = Vector3.zero;
     Vector3 lookDir;
+    [HideInInspector] public Vector3 movementInput = Vector3.zero;
     #endregion
 
     #region PROPERTIES
@@ -49,14 +49,8 @@ public class PlayerController : MonoBehaviour
     // Аккумулятор, который держит игрок.
     public BatteryCell HoldingBattery
     {
-        get => _holdingBattery;
-        set
-        {
-            _holdingBattery = value;
-            ShowGun(value == null);
-        }
+        get; set;
     }
-    BatteryCell _holdingBattery;
     // Значение скорости при различных типах передвижения.
     float MovementSpeed { get => IsDashing ? dashSpeed : runSpeed; }
     // "Замедлитель" игрока, когда он несёт аккумулятор.
@@ -66,7 +60,7 @@ public class PlayerController : MonoBehaviour
     #region COMPONENTS
     Rigidbody rb;
     Camera cam;
-    PlayerAnimations pAnimations;
+    public PlayerAnimations pAnimations { private set; get; }
     #endregion
 
     void Awake()
@@ -108,7 +102,7 @@ public class PlayerController : MonoBehaviour
         // Стрельба.
         if (HoldingBattery == null)
         {
-            if (!currentGun.isAutomatic)
+            if (!currentGun.gunData.isAutomatic)
             {
                 if (Input.GetMouseButtonDown(0) && currentGun.IsReadyToShoot)
                     currentGun.Shoot();
@@ -230,20 +224,29 @@ public class PlayerController : MonoBehaviour
         HoldingBattery.transform.SetParent(null);
         HoldingBattery.transform.position = newPosition;
         HoldingBattery = null;
+
+        ShowGun(true);
     }
 
     public void TakeBattery(BatteryCell b)
     {
         HoldingBattery = b;
         HoldingBattery.transform.SetParent(transform);
+
+        ShowGun(false);
     }
     #endregion
 
     #region Hide/Show Gun
-    void ShowGun(bool isShow)
+    public void ShowGun(bool isShow)
     {
         if (currentGun != null)
+        {
             currentGun.gameObject.SetActive(isShow);
+            pAnimations.UpdateUpperState(currentGun.gunData.upperAnimationState);
+        }
+        else
+            pAnimations.UpdateUpperState(0);
     }
     #endregion
 
@@ -265,6 +268,12 @@ public class PlayerController : MonoBehaviour
         if (coll != null)
             if (coll.gameObject.layer != groundLayer)
                 isCollision = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("PowerUp") && HoldingBattery == null)
+            other.GetComponent<IPowerUp>().Use();
     }
     #endregion
 }

@@ -3,25 +3,16 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    [Header("General")]
     public Transform shotPos;
-    public bool isAutomatic;
-    public bool isEndlessAmmo;
-    public int ammoCount;
-    public float delayBtwShots;
+    [HideInInspector] public GunData gunData;
 
-    [Header("Projectile")]
-    public GameObject projectile;
-    public float projSpeed;
-    public int projDmg;
-
-    public int Ammo 
+    public int Ammo
     {
-        get => ammo; 
+        get => ammo;
         set
         {
             UIManager.Instance.gun.UpdateAmmoCount(value);
-            ammo = Mathf.Clamp(value, 0, ammoCount);
+            ammo = Mathf.Clamp(value, 0, gunData.ammoCount);
         }
     }
     int ammo;
@@ -30,18 +21,17 @@ public class Gun : MonoBehaviour
 
     void Start()
     {
-        if (!isEndlessAmmo)
-            Ammo = ammoCount;
+        Ammo = gunData.ammoCount;
     }
 
     public void Shoot()
     {
-        GameObject projGO = Instantiate(projectile, shotPos.position, shotPos.rotation);
+        GameObject projGO = Instantiate(gunData.projectile, shotPos.position, shotPos.rotation);
         Projectile proj = projGO.GetComponent<Projectile>();
 
-        proj.SetData(projSpeed, projDmg);
+        proj.SetData(gunData.projSpeed, gunData.projDmg);
 
-        if (!isEndlessAmmo)
+        if (!gunData.isEndlessAmmo)
         {
             Ammo--;
 
@@ -56,7 +46,7 @@ public class Gun : MonoBehaviour
     IEnumerator Delay()
     {
         IsReadyToShoot = false;
-        yield return new WaitForSeconds(delayBtwShots);
+        yield return new WaitForSeconds(gunData.delayBtwShots);
         IsReadyToShoot = true;
     }
 }

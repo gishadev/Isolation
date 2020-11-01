@@ -15,13 +15,13 @@ public class Projectile : MonoBehaviour
 
     void Update()
     {
-        Vector3 direction = transform.InverseTransformDirection(-transform.right);
+        Vector3 direction = transform.InverseTransformDirection(-transform.forward);
         direction.y = 0f;
 
         transform.Translate(direction.normalized * projSpeed * Time.deltaTime);
 
         RaycastHit hitInfo;
-        if (Physics.Raycast(transform.position, -transform.right, out hitInfo, 0.3f, whatIsSolid))
+        if (Physics.Raycast(transform.position, -transform.forward, out hitInfo, 0.3f, whatIsSolid))
         {
             if (hitInfo.collider.CompareTag("Player"))
                 hitInfo.collider.GetComponent<PlayerController>().AddHealth(-projDmg);

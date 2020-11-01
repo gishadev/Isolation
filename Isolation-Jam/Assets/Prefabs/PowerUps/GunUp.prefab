@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3451071926560160583
+--- !u!1 &8688091515277722680
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,47 +8,47 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3033226184752835918}
-  - component: {fileID: 8874388693460311966}
-  - component: {fileID: 7168499960326000839}
-  - component: {fileID: 8177335283661936515}
-  - component: {fileID: 5309778864028719719}
-  m_Layer: 11
-  m_Name: Battery Cell T1
-  m_TagString: Untagged
+  - component: {fileID: 4922010445562063411}
+  - component: {fileID: 8569232275733813947}
+  - component: {fileID: 6298202528768991673}
+  - component: {fileID: 3782518340003485845}
+  - component: {fileID: 6263684498883171152}
+  m_Layer: 0
+  m_Name: GunUp
+  m_TagString: PowerUp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3033226184752835918
+--- !u!4 &4922010445562063411
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3451071926560160583}
+  m_GameObject: {fileID: 8688091515277722680}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.12, y: 1.89, z: 3.16}
-  m_LocalScale: {x: 0.75, y: 1.5, z: 0.75}
+  m_LocalPosition: {x: -1.4375868, y: 2.19, z: 18.724953}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &8874388693460311966
+--- !u!33 &8569232275733813947
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3451071926560160583}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &7168499960326000839
+  m_GameObject: {fileID: 8688091515277722680}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &6298202528768991673
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3451071926560160583}
+  m_GameObject: {fileID: 8688091515277722680}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8e742e35b2082bd438acfe9d73786f28, type: 2}
+  - {fileID: 2100000, guid: 89d9cae911326b7458f02c147bd74aba, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -83,30 +83,33 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8177335283661936515
-BoxCollider:
+--- !u!135 &3782518340003485845
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3451071926560160583}
+  m_GameObject: {fileID: 8688091515277722680}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 3, z: 1}
+  m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5309778864028719719
+--- !u!114 &6263684498883171152
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3451071926560160583}
+  m_GameObject: {fileID: 8688091515277722680}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c23273a906112af408d2d39a824e980a, type: 3}
+  m_Script: {fileID: 11500000, guid: 7b0694050c29013498997d0f36a3f04b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedDecrease: 0.15
-  chargePercent: 0.33
+  guns:
+  - {fileID: 11400000, guid: 0a0786798e1963247b9d2d2fcbe064cc, type: 2}
+  - {fileID: 11400000, guid: c78c19091cec975468f5506498439646, type: 2}
+  - {fileID: 11400000, guid: 44ac6a5e8d6c8bf4faa7bacace390e6f, type: 2}
+  - {fileID: 11400000, guid: 44d32c3a61c856d4b9551160602105de, type: 2}

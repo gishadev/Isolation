@@ -6,7 +6,7 @@ public class PlayerAnimations : MonoBehaviour
 
     void Awake()
     {
-        animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();    
     }
 
     public void UpdateMovementAnimationVel(Vector3 lookDir, Vector3 movementInput)
@@ -20,6 +20,12 @@ public class PlayerAnimations : MonoBehaviour
             animator.SetFloat("X", d.x);
 
         animator.SetFloat("Z", d.z);
+    }
+
+    // 0 - 2 (Empty, Pistol, Rifle)
+    public void UpdateUpperState(int state)
+    {
+        animator.SetInteger("UpperState", state);
     }
 
     Vector3 GetMovementDir(Vector3 lookDir, Vector3 moveVel)

@@ -7,6 +7,7 @@ TagManager:
   - Enemy
   - WorldWall
   - EdgeBasis
+  - PowerUp
   layers:
   - Default
   - TransparentFX

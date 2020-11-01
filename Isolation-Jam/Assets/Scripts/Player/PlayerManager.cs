@@ -17,8 +17,6 @@ public class PlayerManager : MonoBehaviour
 
     [Header("Guns")]
     public GunData defaultGun;
-    public GunData[] customGuns;
-
 
     public IInteractable SelectedInteractTarget { get; private set; }
 
@@ -47,6 +45,7 @@ public class PlayerManager : MonoBehaviour
     {
         player.transform.position = playerSpawnpoint.position;
         yield return new WaitForSeconds(respawnTime);
+        GiveGun(defaultGun);
         player.Health = player.maxHealth;
         player.gameObject.SetActive(true);
     }
@@ -116,13 +115,18 @@ public class PlayerManager : MonoBehaviour
         gunGO.transform.localRotation = Quaternion.Euler(gunData.offsetRotation);
 
         Gun newGun = gunGO.GetComponent<Gun>();
+        newGun.gunData = gunData;
 
         // Назначаем новую пушку.
         player.currentGun = newGun;
 
-        // Обновляем UI
+        // Обновляем UI.
         UIManager.Instance.gun.ResetGun(gunData);
-        UIManager.Instance.gun.UpdateAmmoCount(newGun.ammoCount);
+        UIManager.Instance.gun.UpdateAmmoCount(newGun.gunData.ammoCount);
+
+        // Обновляем анимацию.
+        player.pAnimations.UpdateUpperState(newGun.gunData.upperAnimationState);
+
     }
     #endregion
 }

@@ -19,5 +19,6 @@ public class BatteryCell : MonoBehaviour, IInteractable
     public void OnDestroy()
     {
         PlayerManager.Instance.player.HoldingBattery = null;
+        PlayerManager.Instance.player.ShowGun(true);
     }
 }
