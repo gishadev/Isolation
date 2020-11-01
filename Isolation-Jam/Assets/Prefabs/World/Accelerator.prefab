@@ -210,7 +210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ca304ac5a230354cb618ae3e6168f13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fullDischargeTime: 20
+  fullDischargeTime: 45
   lrToWall: {fileID: 918287016488974236}
   lrToCore: {fileID: 7570529178225487081}
 --- !u!1 &2883165959908629549

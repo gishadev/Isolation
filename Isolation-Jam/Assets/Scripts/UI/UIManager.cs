@@ -7,6 +7,9 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance { private set; get; }
     #endregion
 
+    public GameObject menu;
+    public Timer timer;
+    public UIRespawning respawning;
     public UIHealth health;
     public UIGun gun;
     public GameObject interactionText;
@@ -17,6 +20,12 @@ public class UIManager : MonoBehaviour
     {
         Instance = this;
         cam = Camera.main;
+    }
+
+    public void OnPlay()
+    {
+        menu.SetActive(false);
+        timer.StartTimer();
     }
 
     public void ShowInteractionText(Vector3 objectPosition)

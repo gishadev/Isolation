@@ -110,5 +110,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c23273a906112af408d2d39a824e980a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedDecrease: 0.15
-  chargePercent: 0.33
+  speedDecrease: 0.25
+  chargePercent: 0.6

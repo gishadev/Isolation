@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 2626950044647481988}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2, y: 2.64, z: -5.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -93,10 +93,10 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2626950044647481988}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.75
-  m_Height: 3
+  m_Radius: 0.7
+  m_Height: 5
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &2626950044647482105
@@ -125,11 +125,11 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 4
+  m_Speed: 7
   m_Acceleration: 128
   avoidancePriority: 50
   m_AngularSpeed: 256
-  m_StoppingDistance: 1.5
+  m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -149,10 +149,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d287671dd244304daa98fc7941b94ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 30
+  health: 10
+  gunUpPrefab: {fileID: 8688091515277722680, guid: a17536656e4c764428cb5324c6e65b86, type: 3}
+  gunUpChance: 0.05
   damage: 15
   knockbackForce: 35
-  attackRadius: 0.9
+  attackRadius: 0.5
   playerLayer:
     serializedVersion: 2
     m_Bits: 256

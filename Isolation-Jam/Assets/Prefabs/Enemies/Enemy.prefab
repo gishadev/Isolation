@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 6734091396424202394}
   - component: {fileID: 6734091396424202393}
   - component: {fileID: 6734091396424202392}
+  - component: {fileID: 3626035584034171607}
   - component: {fileID: 6734091396424202398}
   - component: {fileID: 6734091396424202397}
-  - component: {fileID: 3228755683896646532}
   - component: {fileID: 6290002816034994914}
   m_Layer: 10
   m_Name: Enemy
@@ -85,6 +85,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &3626035584034171607
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6734091396424202467}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.7
+  m_Height: 5
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &6734091396424202398
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -115,7 +129,7 @@ NavMeshAgent:
   m_Acceleration: 128
   avoidancePriority: 50
   m_AngularSpeed: 256
-  m_StoppingDistance: 1.5
+  m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -123,19 +137,6 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 3
   m_ObstacleAvoidanceType: 3
---- !u!135 &3228755683896646532
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6734091396424202467}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6290002816034994914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,10 +149,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d287671dd244304daa98fc7941b94ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 65
+  health: 40
+  gunUpPrefab: {fileID: 8688091515277722680, guid: a17536656e4c764428cb5324c6e65b86, type: 3}
+  gunUpChance: 0.05
   damage: 25
   knockbackForce: 35
-  attackRadius: 1
+  attackRadius: 0.5
   playerLayer:
     serializedVersion: 2
     m_Bits: 256

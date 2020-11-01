@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class EnemiesManager : MonoBehaviour
 {
+    #region Singleton
+    public static EnemiesManager Instance { private set; get; }
+    #endregion
+
     [Header("Spawning")]
     public GameObject[] prefabs;
     public Spawnpoint[] spawnpoints;
@@ -11,9 +15,14 @@ public class EnemiesManager : MonoBehaviour
     public float spawnDelay;
     public int maxEnemyCount = 15;
 
-    List<Enemy> enemies = new List<Enemy>();
+    public Enemy[] enemies;
 
-    void Start()
+    void Awake()
+    {
+        Instance = this;
+    }
+
+    public void OnPlay()
     {
         StartCoroutine(Spawning());
     }
@@ -22,7 +31,9 @@ public class EnemiesManager : MonoBehaviour
     {
         while (true)
         {
-            if (enemies.Count < maxEnemyCount)
+            enemies = FindObjectsOfType<Enemy>();
+
+            if (enemies.Length < maxEnemyCount)
             {
                 Spawnpoint s = spawnpoints[Random.Range(0, spawnpoints.Length)];
 
@@ -34,8 +45,7 @@ public class EnemiesManager : MonoBehaviour
                         s.Position,
                         Quaternion.identity).GetComponent<Enemy>();
 
-                    enemies.Add(e);
-
+                    e.LocalSpawnpoint = s;
                 }
                 else
                 {

@@ -97,5 +97,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   batteryCellPrefab: {fileID: 3451071926560160583, guid: 305de9c6fe5b5d24a831e6cbcc7bdedf, type: 3}
-  spawnDelay: 3
+  spawnDelay: 10
   sampleEnergyMat: {fileID: 2100000, guid: 9b7d3d115d738e3419eebb1dc203188e, type: 2}

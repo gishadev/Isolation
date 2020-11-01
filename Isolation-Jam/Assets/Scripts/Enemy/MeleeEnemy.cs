@@ -11,14 +11,19 @@ public class MeleeEnemy : Enemy
 
     void Update()
     {
-        // Враг движется к игроку и, останавливаясь на мин. дистанции, атакует его.
-        if (IsInPlayer())
-            Attack();
-        else
-            Agent.SetDestination(PlayerTrans.position);
+        if (Player.gameObject.activeInHierarchy)
+        {
+            // Враг движется к игроку и, останавливаясь на мин. дистанции, атакует его.
+            if (IsInPlayer())
+                Attack();
+            else
+                Agent.SetDestination(Player.transform.position);
 
-        if (Agent.velocity.normalized.magnitude == 0f)
-            LockPointOfView(PlayerTrans.position);
+            if (Agent.velocity.normalized.magnitude == 0f)
+                LockPointOfView(Player.transform.position);
+        }
+        else
+            Agent.SetDestination(LocalSpawnpoint.Position);
     }
 
     void Attack()
@@ -40,6 +45,6 @@ public class MeleeEnemy : Enemy
 
     bool IsInPlayer()
     {
-        return Physics.CheckSphere(transform.position, attackRadius, playerLayer) || !PlayerManager.Instance.player.IsDashing;
+        return Physics.CheckSphere(transform.position, attackRadius, playerLayer) && !PlayerManager.Instance.player.IsDashing;
     }
 }

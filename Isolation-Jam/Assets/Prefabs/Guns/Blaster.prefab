@@ -128,11 +128,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a6e4ecacbb055c4e9b481be2cbd0cef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotPos: {fileID: 7168937911178133241}
-  isAutomatic: 0
-  isEndlessAmmo: 1
-  ammoCount: 0
-  delayBtwShots: 0.15
-  projectile: {fileID: 5300017203876844138, guid: b97f6219bf5eda541a31292a5cd39b91, type: 3}
-  projSpeed: 15
-  projDmg: 15
+  shotPos:
+  - {fileID: 7168937911178133241}
+  gunData: {fileID: 0}

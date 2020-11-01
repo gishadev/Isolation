@@ -84,53 +84,59 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Передвижение.
-        if (!IsDashing)
+        if (GameManager.Instance.IsPlaying)
         {
-            UpdateMovementInput();
-            pAnimations.UpdateMovementAnimationVel(lookDir, movementInput);
-        }
-
-        // Поворот игрока.
-        PlayerRotation();
-
-        // Рывок.
-        if (Input.GetKeyDown(DashInput))
-        {
-            if (movementInput.normalized.magnitude > 0 && !isCollision && !isDashDelay)
-                StartCoroutine(Dash());
-        }
-
-        // Стрельба.
-        if (HoldingBattery == null)
-        {
-            if (!currentGun.gunData.isAutomatic)
+            // Передвижение.
+            if (!IsDashing)
             {
-                if (Input.GetMouseButtonDown(0) && currentGun.IsReadyToShoot)
-                    currentGun.Shoot();
+                UpdateMovementInput();
+                pAnimations.UpdateMovementAnimationVel(lookDir, movementInput);
             }
 
-            else
+            // Поворот игрока.
+            PlayerRotation();
+
+            // Рывок.
+            if (Input.GetKeyDown(DashInput))
             {
-                if (Input.GetMouseButton(0) && currentGun.IsReadyToShoot)
-                    currentGun.Shoot();
+                if (movementInput.normalized.magnitude > 0 && !isCollision && !isDashDelay)
+                    StartCoroutine(Dash());
+            }
+
+            // Стрельба.
+            if (HoldingBattery == null)
+            {
+                if (!currentGun.gunData.isAutomatic)
+                {
+                    if (Input.GetMouseButtonDown(0) && currentGun.IsReadyToShoot)
+                        currentGun.Shoot();
+                }
+
+                else
+                {
+                    if (Input.GetMouseButton(0) && currentGun.IsReadyToShoot)
+                        currentGun.Shoot();
+                }
             }
         }
     }
 
     void LateUpdate()
     {
-        // Взаимодействуем.
-        if (manager.SelectedInteractTarget != null)
+        if (GameManager.Instance.IsPlaying)
         {
-            if (Input.GetKeyDown(KeyCode.E))
-                manager.SelectedInteractTarget.Interact();
-        }
+            // Взаимодействуем.
+            if (manager.SelectedInteractTarget != null)
+            {
+                if (Input.GetKeyDown(KeyCode.E))
+                    manager.SelectedInteractTarget.Interact();
+            }
 
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            if (HoldingBattery != null)
-                DropBattery();
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                if (HoldingBattery != null)
+                    DropBattery();
+            }
         }
     }
 

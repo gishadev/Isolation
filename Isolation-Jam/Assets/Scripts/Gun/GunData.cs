@@ -22,6 +22,4 @@ public class GunData : ScriptableObject
     public GameObject projectile;
     public float projSpeed;
     public int projDmg;
-
-
 }

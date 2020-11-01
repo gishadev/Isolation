@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    public Transform shotPos;
+    public Transform[] shotPos;
     [HideInInspector] public GunData gunData;
 
     public int Ammo
@@ -22,10 +22,12 @@ public class Gun : MonoBehaviour
 
     public void Shoot()
     {
-        GameObject projGO = Instantiate(gunData.projectile, shotPos.position, shotPos.rotation);
-        Projectile proj = projGO.GetComponent<Projectile>();
-
-        proj.SetData(gunData.projSpeed, gunData.projDmg);
+        for (int i = 0; i < shotPos.Length; i++)
+        {
+            GameObject projGO = Instantiate(gunData.projectile, shotPos[i].position, shotPos[i].rotation);
+            Projectile proj = projGO.GetComponent<Projectile>();
+            proj.SetData(gunData.projSpeed, gunData.projDmg);
+        }
 
         if (!gunData.isEndlessAmmo)
         {
@@ -44,6 +46,11 @@ public class Gun : MonoBehaviour
     {
         IsReadyToShoot = false;
         yield return new WaitForSeconds(gunData.delayBtwShots);
+        IsReadyToShoot = true;
+    }
+
+    void OnDisable()
+    {
         IsReadyToShoot = true;
     }
 }

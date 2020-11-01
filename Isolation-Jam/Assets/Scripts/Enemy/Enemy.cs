@@ -5,14 +5,18 @@ public class Enemy : MonoBehaviour
 {
     [Header("General")]
     public int health = 10;
+    [Header("Drop Gun Up")]
+    public GameObject gunUpPrefab;
+    public float gunUpChance = 0.25f;
 
-    public Transform PlayerTrans { private set; get; }
+    public Spawnpoint LocalSpawnpoint { get; set; }
+    public PlayerController Player { private set; get; }
     public NavMeshAgent Agent { private set; get; }
 
     void Awake()
     {
         Agent = GetComponent<NavMeshAgent>();
-        PlayerTrans = PlayerManager.Instance.player.transform;
+        Player = PlayerManager.Instance.player;
     }
 
     public void TakeDamage(int dmg)
@@ -25,6 +29,9 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
+        if (Random.Range(0f, 1f) < gunUpChance)
+            Instantiate(gunUpPrefab, transform.position, Quaternion.identity);
+
         Destroy(gameObject);
     }
 }

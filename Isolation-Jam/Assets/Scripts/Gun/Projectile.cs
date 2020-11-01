@@ -4,6 +4,7 @@ public class Projectile : MonoBehaviour
 {
     public LayerMask whatIsSolid;
     public float lifeTime;
+    public float rayLength;
 
     float projSpeed;
     int projDmg;
@@ -21,7 +22,7 @@ public class Projectile : MonoBehaviour
         transform.Translate(direction.normalized * projSpeed * Time.deltaTime);
 
         RaycastHit hitInfo;
-        if (Physics.Raycast(transform.position, -transform.forward, out hitInfo, 0.3f, whatIsSolid))
+        if (Physics.Raycast(transform.position + transform.forward * rayLength, -transform.forward, out hitInfo, rayLength, whatIsSolid))
         {
             if (hitInfo.collider.CompareTag("Player"))
                 hitInfo.collider.GetComponent<PlayerController>().AddHealth(-projDmg);
@@ -30,7 +31,7 @@ public class Projectile : MonoBehaviour
 
             DestroyProjectile();
         }
-        Debug.DrawRay(transform.position, -transform.forward * 10f, Color.red);
+        Debug.DrawRay(transform.position + transform.forward * rayLength, -transform.forward * rayLength, Color.red);
     }
 
     public void SetData(float _projSpeed, int _projDmg)

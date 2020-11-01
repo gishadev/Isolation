@@ -44,6 +44,7 @@ public class PlayerManager : MonoBehaviour
     IEnumerator Respawning()
     {
         player.transform.position = playerSpawnpoint.position;
+        UIManager.Instance.respawning.TriggerUIRespawning(respawnTime);
         yield return new WaitForSeconds(respawnTime);
         GiveGun(defaultGun);
         player.Health = player.maxHealth;
