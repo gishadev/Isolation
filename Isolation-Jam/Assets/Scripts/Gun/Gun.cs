@@ -27,6 +27,8 @@ public class Gun : MonoBehaviour
             GameObject projGO = Instantiate(gunData.projectile, shotPos[i].position, shotPos[i].rotation);
             Projectile proj = projGO.GetComponent<Projectile>();
             proj.SetData(gunData.projSpeed, gunData.projDmg);
+
+            EffectsEmitter.Emit("GunShoot", shotPos[i].position, shotPos[i].rotation);
         }
 
         if (!gunData.isEndlessAmmo)
@@ -40,6 +42,8 @@ public class Gun : MonoBehaviour
 
 
         StartCoroutine(Delay());
+
+        AudioManager.Instance.PlaySFX(gunData.shootSFX);
     }
 
     IEnumerator Delay()

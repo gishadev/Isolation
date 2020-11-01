@@ -6197,6 +6197,236 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af3fd104ddbcbb54a9c8cfa07411d670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &662748923
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 662748924}
+  - component: {fileID: 662748926}
+  - component: {fileID: 662748925}
+  m_Layer: 0
+  m_Name: SFX/VFX Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &662748924
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 662748923}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1583591590}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &662748925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 662748923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fec0774dd1a23214fac7665eaa5b43ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effects:
+  - name: Blue_Destroy_Large
+    prefab: {fileID: 2210604965586697378, guid: 3d9c6ef7f27b7b74489ab506de39ab3d, type: 3}
+  - name: Blue_Destroy_Small
+    prefab: {fileID: 1048810433329360902, guid: 11d129f4e1272554d9b75d881dd7164c, type: 3}
+  - name: GunShoot
+    prefab: {fileID: 3178851185273487547, guid: b00500cee82539e4ab2aab48c942f2e7, type: 3}
+  - name: PowerUp
+    prefab: {fileID: 5448000519946503288, guid: 9bae683901d4c3d43a5b0ce7d4760df6, type: 3}
+  - name: Proj_Destroy
+    prefab: {fileID: 5167328135282787672, guid: 5d135b94ab27ae44e97c5fbb27149257, type: 3}
+  - name: Red_Destroy_Large
+    prefab: {fileID: 2210604965586697378, guid: b4dc342512534cd4eb9878288885ccd3, type: 3}
+  - name: Red_Destroy_Small
+    prefab: {fileID: 1048810433329360902, guid: 888ac14778c671c418e46bc25dff61fe, type: 3}
+--- !u!114 &662748926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 662748923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5942539db6782314682860a748f9a556, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundMusicList:
+  - Name: Music
+    audioClip: {fileID: 8300000, guid: 560ab83b4ceb68d459df736dc593140a, type: 3}
+    isLooping: 1
+    volume: 0.5
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  sfxList:
+  - Name: Accelerator_Charge
+    audioClip: {fileID: 8300000, guid: 4ce2c673478cfe6459c90c4cd2520c43, type: 3}
+    isLooping: 0
+    volume: 0.5
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Accelerator_Uncharge
+    audioClip: {fileID: 8300000, guid: 8e67cb224068b2049b9961db1d145c3a, type: 3}
+    isLooping: 0
+    volume: 0.5
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Assault
+    audioClip: {fileID: 8300000, guid: 79241ed52f1c492438d53769984f36c0, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Battery_Drop
+    audioClip: {fileID: 8300000, guid: 795ec7f41527002499bcb08df912b2fc, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Battery_Take
+    audioClip: {fileID: 8300000, guid: 7503dd72fe4772e4ebc46681f2656756, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Blaster
+    audioClip: {fileID: 8300000, guid: 280802399989ca048ac954bbdd23a649, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Core_Charge
+    audioClip: {fileID: 8300000, guid: 3f561f83b7218a44484508c3ecaa339a, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Enemy_Die
+    audioClip: {fileID: 8300000, guid: 789996d82191a3f45939b87736186596, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Enemy_Dmg
+    audioClip: {fileID: 8300000, guid: fdea96f83ff5f3742ad9f1dda42af9d9, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Player_Dash
+    audioClip: {fileID: 8300000, guid: b6a1df173b907484e8dc3d56238f996e, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Player_Die
+    audioClip: {fileID: 8300000, guid: b5ce81d5d60739b4692afd3f5859b30e, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Player_Dmg
+    audioClip: {fileID: 8300000, guid: 34423dbe1c0abb3468ed3c1c555d7c1d, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Player_Spawn
+    audioClip: {fileID: 8300000, guid: 8400d56f8c4feb140ab53f15bebec615, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: PowerUp
+    audioClip: {fileID: 8300000, guid: 6e34d70f4d56cab4aa175a38a35f2f53, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Proj_Destroy
+    audioClip: {fileID: 8300000, guid: 74cab8b972ad4174696ad566d9282921, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Shotgun
+    audioClip: {fileID: 8300000, guid: 88ff8f5593cb9b14f87f17b6980f8392, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: SMG
+    audioClip: {fileID: 8300000, guid: d3dc9ef74d76d36428fb8ef583bebdd7, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Sniper
+    audioClip: {fileID: 8300000, guid: 12a9cbc4c957df24a9ced8364fd38ef9, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Accelerator_Charge
+    audioClip: {fileID: 8300000, guid: 4ce2c673478cfe6459c90c4cd2520c43, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  - Name: Enemy_Spawn
+    audioClip: {fileID: 8300000, guid: 53865799810e59442abeac8c6fe7ee04, type: 3}
+    isLooping: 0
+    volume: 1
+    pitch: 1
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  currentMusic:
+    Name: 
+    audioClip: {fileID: 0}
+    isLooping: 0
+    volume: 0
+    pitch: 0
+    go: {fileID: 0}
+    audioSource: {fileID: 0}
+  musicVolume: 1
+  sfxVolume: 1
 --- !u!1 &672336551
 GameObject:
   m_ObjectHideFlags: 0
@@ -14845,6 +15075,7 @@ Transform:
   - {fileID: 384498950}
   - {fileID: 1023909684}
   - {fileID: 81346539}
+  - {fileID: 662748924}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

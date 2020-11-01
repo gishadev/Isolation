@@ -17,6 +17,7 @@ public class GunData : ScriptableObject
     public bool isEndlessAmmo;
     public int ammoCount;
     public float delayBtwShots;
+    public string shootSFX;
 
     [Header("Projectile")]
     public GameObject projectile;

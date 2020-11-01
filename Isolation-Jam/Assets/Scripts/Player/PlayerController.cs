@@ -159,6 +159,9 @@ public class PlayerController : MonoBehaviour
         movementInput = movementInput.normalized;
         IsDashing = true;
 
+        AudioManager.Instance.PlaySFX("Player_Dash");
+        EffectsEmitter.Emit("Blue_Destroy_Large", transform.position, Quaternion.identity);
+
         while (Vector3.Distance(initPos, transform.position) < dashDist * MovementModifier && !isCollision)
             yield return null;
 
@@ -200,6 +203,9 @@ public class PlayerController : MonoBehaviour
     {
         Health += value;
 
+        AudioManager.Instance.PlaySFX("Player_Dmg");
+        EffectsEmitter.Emit("Red_Destroy_Small", transform.position, Quaternion.identity);
+
         if (Health <= 0)
             Die();
     }
@@ -222,6 +228,9 @@ public class PlayerController : MonoBehaviour
         isCollision = false;
         StopDashDelay();
 
+        AudioManager.Instance.PlaySFX("Player_Die");
+        EffectsEmitter.Emit("Red_Destroy_Large", transform.position, Quaternion.identity);
+
         PlayerManager.Instance.TriggerRespawning();
     }
     #endregion
@@ -233,6 +242,8 @@ public class PlayerController : MonoBehaviour
         HoldingBattery = null;
 
         ShowGun(true);
+
+        AudioManager.Instance.PlaySFX("Battery_Drop");
     }
 
     public void TakeBattery(BatteryCell b)
@@ -242,6 +253,8 @@ public class PlayerController : MonoBehaviour
         HoldingBattery.transform.position = batteryHoldingPoint.position;
 
         ShowGun(false);
+
+        AudioManager.Instance.PlaySFX("Battery_Take");
     }
     #endregion
 
@@ -282,7 +295,12 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("PowerUp") && HoldingBattery == null)
+        {
             other.GetComponent<IPowerUp>().Use();
+            AudioManager.Instance.PlaySFX("PowerUp");
+            EffectsEmitter.Emit("PowerUp", transform.position, Quaternion.identity);
+        }
+            
     }
     #endregion
 }

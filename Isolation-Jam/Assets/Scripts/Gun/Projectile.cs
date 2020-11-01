@@ -16,13 +16,13 @@ public class Projectile : MonoBehaviour
 
     void Update()
     {
-        Vector3 direction = transform.InverseTransformDirection(-transform.forward);
+        Vector3 direction = transform.InverseTransformDirection(transform.forward);
         direction.y = 0f;
 
         transform.Translate(direction.normalized * projSpeed * Time.deltaTime);
 
         RaycastHit hitInfo;
-        if (Physics.Raycast(transform.position + transform.forward * rayLength, -transform.forward, out hitInfo, rayLength, whatIsSolid))
+        if (Physics.Raycast(transform.position - transform.forward * rayLength, transform.forward, out hitInfo, rayLength, whatIsSolid))
         {
             if (hitInfo.collider.CompareTag("Player"))
                 hitInfo.collider.GetComponent<PlayerController>().AddHealth(-projDmg);
@@ -31,7 +31,7 @@ public class Projectile : MonoBehaviour
 
             DestroyProjectile();
         }
-        Debug.DrawRay(transform.position + transform.forward * rayLength, -transform.forward * rayLength, Color.red);
+        Debug.DrawRay(transform.position - transform.forward * rayLength, transform.forward * rayLength, Color.red);
     }
 
     public void SetData(float _projSpeed, int _projDmg)
@@ -42,6 +42,9 @@ public class Projectile : MonoBehaviour
 
     void DestroyProjectile()
     {
+        AudioManager.Instance.PlaySFX("Proj_Destroy");
+        EffectsEmitter.Emit("Proj_Destroy", transform.position, Quaternion.identity);
+
         Destroy(gameObject);
     }
 

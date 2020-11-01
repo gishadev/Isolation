@@ -14,6 +14,11 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
+    void Start()
+    {
+        AudioManager.Instance.PlaySFX("Player_Spawn");
+    }
+
     void Update()
     {
         if (!IsPlaying)

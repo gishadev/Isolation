@@ -19,9 +19,17 @@ public class Enemy : MonoBehaviour
         Player = PlayerManager.Instance.player;
     }
 
+    void Start()
+    {
+        EffectsEmitter.Emit("Red_Destroy_Small", transform.position, Quaternion.identity);
+        AudioManager.Instance.PlaySFX("Enemy_Spawn");
+    }
+
     public void TakeDamage(int dmg)
     {
         health -= dmg;
+
+        AudioManager.Instance.PlaySFX("Enemy_Dmg");
 
         if (health <= 0)
             Die();
@@ -31,6 +39,9 @@ public class Enemy : MonoBehaviour
     {
         if (Random.Range(0f, 1f) < gunUpChance)
             Instantiate(gunUpPrefab, transform.position, Quaternion.identity);
+
+        AudioManager.Instance.PlaySFX("Enemy_Die");
+        EffectsEmitter.Emit("Red_Destroy_Large", transform.position, Quaternion.identity);
 
         Destroy(gameObject);
     }

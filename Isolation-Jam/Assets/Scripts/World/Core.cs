@@ -39,6 +39,8 @@ public class Core : MonoBehaviour, IInteractable
 
             Destroy(p.HoldingBattery.gameObject);
         }
+
+        AudioManager.Instance.PlaySFX("Core_Charge");
     }
 
     public bool IsReadyForInteraction()

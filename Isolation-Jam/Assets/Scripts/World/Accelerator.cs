@@ -45,6 +45,9 @@ public class Accelerator : MonoBehaviour, IInteractable
             Charge(p.HoldingBattery.chargePercent);
             Destroy(p.HoldingBattery.gameObject);
         }
+
+        EffectsEmitter.Emit("Blue_Destroy_Small", transform.position, Quaternion.identity);
+        AudioManager.Instance.PlaySFX("Accelerator_Charge");
     }
 
     public bool IsReadyForInteraction()

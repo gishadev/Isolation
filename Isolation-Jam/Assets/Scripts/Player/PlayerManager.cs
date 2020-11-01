@@ -49,6 +49,8 @@ public class PlayerManager : MonoBehaviour
         GiveGun(defaultGun);
         player.Health = player.maxHealth;
         player.gameObject.SetActive(true);
+
+        AudioManager.Instance.PlaySFX("Player_Spawn");
     }
     #endregion
 
